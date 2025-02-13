@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/t-db
+    username: t-user
+    password: t-password
+  jpa:
+    generate-ddl: true
+    show-sql: true
+
+
+server:
+  port: 8082
