@@ -17,9 +17,7 @@ import tproject.userservice.enumeration.UserPrivacy;
 @AllArgsConstructor
 public class UserPrivacyEntity extends BaseEntity {
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private TUserEntity user;
+    private Long userId;
 
     @Column(name = "privacy_setting")
     @Enumerated(EnumType.STRING)

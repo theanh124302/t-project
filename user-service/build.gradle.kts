@@ -32,6 +32,7 @@ dependencies {
     implementation("tproject:t-common:t-common-0.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    runtimeOnly("org.postgresql:postgresql")
 }
 
 tasks.withType<Test> {

@@ -1,21 +1,22 @@
 package tproject.userservice.service;
 
-import tproject.userservice.dto.request.UserInformationRequestDto;
-import tproject.userservice.dto.request.UserRegisterRequestDto;
-import tproject.userservice.dto.request.UserSearchRequestDto;
-import tproject.userservice.dto.request.UserUpdateRequestDto;
-import tproject.userservice.dto.response.UserInformationResponseDto;
-import tproject.userservice.dto.response.UserRegisterResponseDto;
-import tproject.userservice.dto.response.UserUpdateResponseDto;
+import tproject.tcommon.response.restfulresponse.RestfulResponse;
+import tproject.userservice.dto.request.tuser.UserInformationRequestDto;
+import tproject.userservice.dto.request.tuser.UserRegisterRequestDto;
+import tproject.userservice.dto.request.tuser.UserSearchRequestDto;
+import tproject.userservice.dto.request.tuser.UserUpdateRequestDto;
+import tproject.userservice.dto.response.tuser.UserInformationResponseDto;
+import tproject.userservice.dto.response.tuser.UserRegisterResponseDto;
+import tproject.userservice.dto.response.tuser.UserUpdateResponseDto;
 
 public interface TUserService {
 
-    UserRegisterResponseDto registerUser(UserRegisterRequestDto userRegisterRequestDto);
+    RestfulResponse<UserRegisterResponseDto> registerUser(UserRegisterRequestDto userRegisterRequestDto);
 
-    UserUpdateResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto);
+    RestfulResponse<UserUpdateResponseDto> updateUser(UserUpdateRequestDto userUpdateRequestDto);
 
-    UserInformationResponseDto getUserInformation(UserInformationRequestDto userInformationRequestDto);
+    RestfulResponse<UserInformationResponseDto> getUserInformation(UserInformationRequestDto userInformationRequestDto);
 
-    UserSearchRequestDto searchUser(UserSearchRequestDto userSearchRequestDto);
+    RestfulResponse<UserSearchRequestDto> searchUser(UserSearchRequestDto userSearchRequestDto);
 
 }

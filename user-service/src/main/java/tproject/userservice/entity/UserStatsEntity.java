@@ -18,9 +18,7 @@ import tproject.tcommon.model.BaseEntity;
 @AllArgsConstructor
 public class UserStatsEntity extends BaseEntity {
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private TUserEntity user;
+    private Long userId;
 
     private Integer likeCount;
 

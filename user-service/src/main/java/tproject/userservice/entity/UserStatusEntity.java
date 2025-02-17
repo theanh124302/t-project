@@ -19,9 +19,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class UserStatusEntity extends BaseEntity {
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private TUserEntity user;
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     private UserStatusEnum status;

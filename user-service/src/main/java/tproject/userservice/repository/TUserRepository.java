@@ -1,9 +1,9 @@
 package tproject.userservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.stereotype.Repository;
 import tproject.userservice.entity.TUserEntity;
 
-@RequestMapping
+@Repository
 public interface TUserRepository extends JpaRepository<TUserEntity, Long> {
 }

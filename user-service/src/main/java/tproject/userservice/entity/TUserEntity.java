@@ -17,10 +17,15 @@ public class TUserEntity extends BaseEntity {
 
     private Long authId;
 
+    @NonNull
     @Column(unique = true)
     private String username;
 
-    private String fullName;
+    @NonNull
+    private String firstName;
+
+    @NonNull
+    private String lastName;
 
     private String bio;
 
