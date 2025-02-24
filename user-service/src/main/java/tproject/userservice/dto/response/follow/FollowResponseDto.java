@@ -3,6 +3,7 @@ package tproject.userservice.dto.response.follow;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import tproject.userservice.enumeration.FollowStatus;
@@ -16,9 +17,9 @@ public class FollowResponseDto {
 
     private Long id;
 
-    private Long followerId;
+    private String followerUsername;
 
-    private Long followingId;
+    private String followingUsername;
 
     private FollowStatus status;
 

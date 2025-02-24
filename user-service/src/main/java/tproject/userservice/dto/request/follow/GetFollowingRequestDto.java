@@ -11,8 +11,8 @@ import lombok.Setter;
 @Builder
 public class GetFollowingRequestDto {
 
-    private Long userId;
+    private String username;
 
-    private Long actorId;
+    private String actorUsername;
 
 }

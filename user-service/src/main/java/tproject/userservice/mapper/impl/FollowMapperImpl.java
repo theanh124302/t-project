@@ -10,25 +10,11 @@ import tproject.userservice.mapper.FollowMapper;
 @Component
 public class FollowMapperImpl implements FollowMapper {
 
-    public FollowEntity followRequestToEntity(FollowRequestDto request) {
-        return FollowEntity.builder()
-                .followingId(request.getFollowingId())
-                .followerId(request.getFollowerId())
-                .build();
-    }
-
     public FollowResponseDto entityToFollowResponse(FollowEntity entity) {
         return FollowResponseDto.builder()
                 .id(entity.getId())
-                .followingId(entity.getFollowingId())
-                .followerId(entity.getFollowerId())
-                .status(entity.getStatus())
-                .build();
-    }
-
-    public FollowAcceptResponseDto entityToFollowAcceptResponse(FollowEntity entity) {
-        return FollowAcceptResponseDto.builder()
-                .followId(entity.getId())
+                .followerUsername(entity.getFollowerUsername())
+                .followingUsername(entity.getFollowingUsername())
                 .status(entity.getStatus())
                 .build();
     }

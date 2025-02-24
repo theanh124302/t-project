@@ -22,10 +22,10 @@ import java.sql.Timestamp;
 public class FollowEntity extends BaseEntity {
 
     @NonNull
-    private Long followerId;
+    private String followerUsername;
 
     @NonNull
-    private Long followingId;
+    private String followingUsername;
 
     @NonNull
     @Enumerated(EnumType.STRING)

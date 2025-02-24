@@ -7,10 +7,6 @@ import tproject.userservice.entity.FollowEntity;
 
 public interface FollowMapper {
 
-    FollowEntity followRequestToEntity(FollowRequestDto request);
-
     FollowResponseDto entityToFollowResponse(FollowEntity entity);
-
-    FollowAcceptResponseDto entityToFollowAcceptResponse(FollowEntity entity);
 
 }

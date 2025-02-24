@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 import tproject.userservice.dto.request.follow.FollowRequestDto;
+import tproject.userservice.dto.request.follow.GetFollowerRequestDto;
+import tproject.userservice.dto.request.follow.GetFollowingRequestDto;
 import tproject.userservice.dto.response.follow.FollowResponseDto;
+import tproject.userservice.dto.response.follow.GetFollowerResponseDto;
+import tproject.userservice.dto.response.follow.GetFollowingResponseDto;
 import tproject.userservice.service.FollowService;
 
 @RestController
@@ -27,6 +31,16 @@ public class FollowController {
     @PostMapping("/unfollow")
     public RestfulResponse<FollowResponseDto> unfollow(@RequestBody FollowRequestDto followRequestDto) {
         return followService.unfollowUser(followRequestDto);
+    }
+
+    @PostMapping("/get-followers")
+    public RestfulResponse<GetFollowerResponseDto> getFollowers(@RequestBody GetFollowerRequestDto getFollowerRequestDto) {
+        return followService.getFollowers(getFollowerRequestDto);
+    }
+
+    @PostMapping("/get-followings")
+    public RestfulResponse<GetFollowingResponseDto> getFollowings(@RequestBody GetFollowingRequestDto getFollowingRequestDto) {
+        return followService.getFollowings(getFollowingRequestDto);
     }
 
 }

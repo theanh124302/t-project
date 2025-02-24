@@ -15,6 +15,9 @@ import lombok.ToString;
 public class UserUpdateRequestDto {
 
     @NonNull
+    private Long id;
+
+    @NonNull
     private Long authId;
 
     @NonNull

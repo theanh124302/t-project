@@ -15,9 +15,8 @@ import lombok.ToString;
 public class UserInformationRequestDto {
 
     @NonNull
-    private Long userId;
+    private String username;
 
-    @NonNull
     private Long fromUserId;
 
 }

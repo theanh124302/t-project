@@ -14,10 +14,8 @@ import lombok.ToString;
 @ToString
 public class FollowRequestDto {
 
-    @NonNull
-    private Long followerId;
+    private String followerUsername;
 
-    @NonNull
-    private Long followingId;
+    private String followingUsername;
 
 }
