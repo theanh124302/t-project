@@ -1,3 +1,6 @@
+
+server:
+  port: 8081
 spring:
   application:
     name: auth-service
@@ -14,6 +17,3 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
-server:
-  port: 8081
