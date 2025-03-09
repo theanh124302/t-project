@@ -1,8 +1,11 @@
 package tproject.userservice.controller;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 import tproject.userservice.dto.request.follow.FollowRequestDto;
@@ -34,13 +37,19 @@ public class FollowController {
     }
 
     @PostMapping("/get-followers")
-    public RestfulResponse<GetFollowerResponseDto> getFollowers(@RequestBody GetFollowerRequestDto getFollowerRequestDto) {
-        return followService.getFollowers(getFollowerRequestDto);
+    public RestfulResponse<GetFollowerResponseDto> getFollowers(@RequestBody GetFollowerRequestDto getFollowerRequestDto,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return followService.getFollowers(getFollowerRequestDto, pageable);
     }
 
     @PostMapping("/get-followings")
-    public RestfulResponse<GetFollowingResponseDto> getFollowings(@RequestBody GetFollowingRequestDto getFollowingRequestDto) {
-        return followService.getFollowings(getFollowingRequestDto);
+    public RestfulResponse<GetFollowingResponseDto> getFollowings(@RequestBody GetFollowingRequestDto getFollowingRequestDto,
+                                                                  @RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return followService.getFollowings(getFollowingRequestDto, pageable);
     }
 
 }

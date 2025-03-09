@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,6 +14,6 @@ import java.util.List;
 @Builder
 public class GetFollowingResponseDto {
 
-    private List<FollowUserDto> following;
+    private Page<FollowUserDto> following;
 
 }

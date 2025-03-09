@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 import tproject.userservice.dto.request.tuser.UserInformationRequestDto;
 import tproject.userservice.dto.request.tuser.UserRegisterRequestDto;
+import tproject.userservice.dto.request.tuser.UserUpdateRequestDto;
 import tproject.userservice.dto.response.tuser.UserInformationResponseDto;
 import tproject.userservice.dto.response.tuser.UserRegisterResponseDto;
+import tproject.userservice.dto.response.tuser.UserUpdateResponseDto;
 import tproject.userservice.service.TUserService;
 
 @RestController
@@ -24,14 +26,17 @@ public class TUserController {
 
     @PostMapping
     public RestfulResponse<UserInformationResponseDto> getUserInformation(@RequestBody @Validated UserInformationRequestDto userInformationRequestDto) {
-        log.info("Call API /user/{} with data ", userInformationRequestDto);
         return userService.getUserInformation(userInformationRequestDto);
     }
 
     @PostMapping("/register")
     public RestfulResponse<UserRegisterResponseDto> registerUser(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
-        log.info("Call API /user/register with data {}", userRegisterRequestDto);
         return userService.registerUser(userRegisterRequestDto);
+    }
+
+    @PostMapping("/update")
+    public RestfulResponse<UserUpdateResponseDto> updateUser(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        return userService.updateUser(userUpdateRequestDto);
     }
 
 }

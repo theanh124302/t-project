@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
@@ -109,16 +111,16 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public RestfulResponse<GetFollowerResponseDto> getFollowers(GetFollowerRequestDto getFollowerRequestDto) {
-        List<FollowUserDto> followUsers = followReadOnlyRepository
-                .findFollowersByUserIdAndStatus(getFollowerRequestDto.getUsername(), FollowStatus.FOLLOWING);
+    public RestfulResponse<GetFollowerResponseDto> getFollowers(GetFollowerRequestDto getFollowerRequestDto, Pageable pageable) {
+        Page<FollowUserDto> followUsers = followReadOnlyRepository
+                .findFollowersByUserIdAndStatus(getFollowerRequestDto.getUsername(), FollowStatus.FOLLOWING, pageable);
         return RestfulResponse.success(new GetFollowerResponseDto(followUsers), ResponseStatus.SUCCESS);
     }
 
     @Override
-    public RestfulResponse<GetFollowingResponseDto> getFollowings(GetFollowingRequestDto getFollowingRequestDto) {
-        List<FollowUserDto> followUsers = followReadOnlyRepository
-                .findFollowingsByUserIdAndStatus(getFollowingRequestDto.getUsername(), FollowStatus.FOLLOWING);
+    public RestfulResponse<GetFollowingResponseDto> getFollowings(GetFollowingRequestDto getFollowingRequestDto, Pageable pageable) {
+        Page<FollowUserDto> followUsers = followReadOnlyRepository
+                .findFollowingsByUserIdAndStatus(getFollowingRequestDto.getUsername(), FollowStatus.FOLLOWING, pageable);
         return RestfulResponse.success(new GetFollowingResponseDto(followUsers), ResponseStatus.SUCCESS);
     }
 

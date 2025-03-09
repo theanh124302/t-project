@@ -10,6 +10,6 @@ public class TestCommonController {
 
     @GetMapping("users/test")
     public RestfulResponse<String> test() {
-        return RestfulResponse.success("Hello World", ResponseStatus.SUCCESS);
+        throw new RuntimeException("Hello World");
     }
 }
