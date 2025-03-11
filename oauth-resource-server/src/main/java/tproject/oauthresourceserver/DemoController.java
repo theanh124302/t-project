@@ -21,7 +21,8 @@ public class DemoController {
     public Map<String, Object> privateMessage(@AuthenticationPrincipal Jwt jwt) {
         return Map.of(
                 "message", "Đây là API được bảo vệ",
-                "principal", jwt.getClaims()
+                "principal", jwt.getClaims(),
+                "headers", jwt.getHeaders()
         );
     }
 }

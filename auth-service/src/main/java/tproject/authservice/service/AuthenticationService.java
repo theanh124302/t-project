@@ -7,7 +7,7 @@ import tproject.authservice.dto.SignUpRequestDTO;
 import tproject.authservice.entity.User;
 
 public interface AuthenticationService {
-    AuthenticationResponseDTO signIn(SignInRequestDTO signinRequestDTO);
+    String signIn(SignInRequestDTO signinRequestDTO);
 
     User signUp(SignUpRequestDTO signUpRequestDTO);
 //    public AuthenticationResponseDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO);

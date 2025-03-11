@@ -22,21 +22,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
 
     @Override
-    public AuthenticationResponseDTO signIn(SignInRequestDTO request) {
-        System.out.println(request.getUsername());
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    public String signIn(SignInRequestDTO request) {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         AuthUserDTO user = userRepository.findByUsername(request.getUsername()).map(AuthUserDTO::new).orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
 
         var jwt = jwtService.generateToken(user);
-//        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
-        AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
-        authenticationResponseDTO.setToken(jwt);
-//        authenticationResponseDTO.setRefreshToken(refreshToken);
-        return authenticationResponseDTO;
+        //        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        //        AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
+        //        authenticationResponseDTO.setToken(jwt);
+        //        authenticationResponseDTO.setRefreshToken(refreshToken);
+        return jwt;
     }
 
     @Override
@@ -46,18 +45,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(user);
     }
-//
-//    public AuthenticationResponseDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO){
-//        String username = jwtService.extractUserName(refreshTokenRequestDTO.getToken());
-//        AuthUserDTO user = userRepository.findByUsername(username).map(AuthUserDTO::new).orElseThrow();
-//        if(jwtService.isTokenValid(refreshTokenRequestDTO.getToken(),user)){
-//            var jwt = jwtService.generateToken(user);
-//            AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
-//            authenticationResponseDTO.setToken(jwt);
-//            authenticationResponseDTO.setRefreshToken(refreshTokenRequestDTO.getToken());
-//            return authenticationResponseDTO;
-//        }
-//        return null;
-//    }
+    //
+    //    public AuthenticationResponseDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO){
+    //        String username = jwtService.extractUserName(refreshTokenRequestDTO.getToken());
+    //        AuthUserDTO user = userRepository.findByUsername(username).map(AuthUserDTO::new).orElseThrow();
+    //        if(jwtService.isTokenValid(refreshTokenRequestDTO.getToken(),user)){
+    //            var jwt = jwtService.generateToken(user);
+    //            AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
+    //            authenticationResponseDTO.setToken(jwt);
+    //            authenticationResponseDTO.setRefreshToken(refreshTokenRequestDTO.getToken());
+    //            return authenticationResponseDTO;
+    //        }
+    //        return null;
+    //    }
 }
 
