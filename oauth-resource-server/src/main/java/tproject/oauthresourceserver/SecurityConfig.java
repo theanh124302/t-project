@@ -18,10 +18,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/private/**").authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> {})
                 );
-//                .oauth2ResourceServer(oauth2 -> oauth2
-//                        .jwt(jwt -> {})
-//                );
 //                .sessionManagement(session -> session
 //                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                );
