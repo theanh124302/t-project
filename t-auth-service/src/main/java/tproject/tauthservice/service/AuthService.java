@@ -2,6 +2,8 @@ package tproject.tauthservice.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +34,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,14 +42,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
 
-    private final int jwtExpirationMs = 3600000; // 1 hour
-    private final int refreshExpirationDateInMs = 9000000; // 2.5 hours
+    private static final int JWT_EXPIRATION_TIME = 3600000; // 1 hour
+    private static final int REFRESH_EXPIRATION_TIME = 9000000; // 2.5 hours
     private final AuthenticationRepository authenticationRepository;
     private final UserRoleRepository userRoleRepository;
 
@@ -54,15 +58,19 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
+
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         AuthenticationDto userDetails = (AuthenticationDto) authentication.getPrincipal();
+
+        log.info("User {} has been authenticated", userDetails);
 
         String accessToken = generateAccessToken(userDetails);
         String refreshToken = generateRefreshToken(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority().substring(5)) // Remove "ROLE_" prefix
-                .collect(Collectors.toList());
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         return JwtResponse.builder()
                 .token(accessToken)
@@ -71,24 +79,22 @@ public class AuthService {
                 .id(userDetails.getUserId())
                 .username(userDetails.getUsername())
                 .roles(roles)
-                .expiresIn(jwtExpirationMs / 1000)
+                .expiresIn(JWT_EXPIRATION_TIME / 1000)
                 .build();
     }
 
     @Transactional
     public SignUpResponse registerUser(SignupRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            throw new RuntimeException("Username is already taken!");
-        }
 
-        UserEntity user = new UserEntity();
-        user.setFirstName(signupRequest.getFirstName());
-        user.setLastName(signupRequest.getLastName());
-        user.setUsername(signupRequest.getUsername());
-        Long userId = userRepository.save(user).getId();
+        UserEntity userEntity = userRepository.findByUsername(signupRequest.getUsername()).orElse(new UserEntity());
 
+        userEntity.setFirstName(signupRequest.getFirstName());
+        userEntity.setLastName(signupRequest.getLastName());
+        userEntity.setUsername(signupRequest.getUsername());
+        Long userId = userRepository.save(userEntity).getId();
 
-        AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+        AuthenticationEntity authenticationEntity = authenticationRepository.findByUsername(signupRequest.getUsername())
+                .orElse(new AuthenticationEntity());
         authenticationEntity.setUserId(userId);
         authenticationEntity.setUsername(signupRequest.getUsername());
         authenticationEntity.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
@@ -114,7 +120,7 @@ public class AuthService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(jwtExpirationMs, ChronoUnit.MILLIS))
+                .expiresAt(now.plus(JWT_EXPIRATION_TIME, ChronoUnit.MILLIS))
                 .subject(userDetails.getUsername())
                 .claim("scope", userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
@@ -129,7 +135,7 @@ public class AuthService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(refreshExpirationDateInMs, ChronoUnit.MILLIS))
+                .expiresAt(now.plus(REFRESH_EXPIRATION_TIME, ChronoUnit.MILLIS))
                 .subject(userDetails.getUsername())
                 .claim("type", "refresh")
                 .build();

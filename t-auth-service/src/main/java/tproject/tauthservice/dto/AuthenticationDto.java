@@ -12,8 +12,10 @@ import tproject.tauthservice.entity.AuthenticationEntity;
 import tproject.tauthservice.entity.RoleEntity;
 import tproject.tauthservice.entity.UserEntity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,16 +37,9 @@ public class AuthenticationDto implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private Set<RoleEntity> roles = new HashSet<>();
+    private List<RoleEntity> roles = new ArrayList<>();
 
-    public AuthenticationDto(AuthenticationDto authenticationDto) {
-        this.userId = authenticationDto.getUserId();
-        this.username = authenticationDto.getUsername();
-        this.password = authenticationDto.getPassword();
-        this.roles = authenticationDto.getRoles();
-    }
-
-    public AuthenticationDto(AuthenticationEntity authenticationEntity, Set<RoleEntity> roles) {
+    public AuthenticationDto(AuthenticationEntity authenticationEntity, List<RoleEntity> roles) {
         this.id = authenticationEntity.getId();
         this.userId = authenticationEntity.getUserId();
         this.username = authenticationEntity.getUsername();
@@ -52,27 +47,11 @@ public class AuthenticationDto implements UserDetails {
         this.roles = roles;
     }
 
-    public AuthenticationDto(AuthenticationEntity authenticationEntity) {
-        this.userId = authenticationEntity.getUserId();
-        this.username = authenticationEntity.getUsername();
-        this.password = authenticationEntity.getPassword();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
                 .collect(Collectors.toSet());
-    }
-
-    @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        return "";
     }
 
     @Override
@@ -93,5 +72,16 @@ public class AuthenticationDto implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthenticationDto{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }
