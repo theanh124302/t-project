@@ -1,8 +1,10 @@
 package tproject.tauthservice.controller;
 
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,11 @@ public class AuthController {
         } catch (Exception e) {
             throw new RuntimeException("Error: Username is already taken!");
         }
+    }
+
+    @GetMapping("/authorization-success")
+    public ResponseEntity<String> authorizationSuccess() {
+        return ResponseEntity.ok("Authorization successful");
     }
 
 

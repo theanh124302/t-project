@@ -40,6 +40,8 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -70,7 +72,8 @@ public class SecurityConfig {
                 .with(authorizationServerConfigurer, authorizationServer ->
                         authorizationServer
                                 .oidc(Customizer.withDefaults())
-                ).csrf(AbstractHttpConfigurer::disable);
+                ).formLogin(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
 
 
         return http
@@ -86,8 +89,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/signin", "/api/v1/auth/signup").permitAll()
                         .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                ).formLogin(Customizer.withDefaults())
                 .build();
     }
 
@@ -151,7 +153,7 @@ public class SecurityConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080")
+                .issuer("http://localhost:8082")
                 .build();
     }
 
@@ -164,10 +166,11 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://localhost:8080/login/oauth2/code/client-app")
-                .redirectUri("http://localhost:8080/authorized")
+//                .redirectUri("http://localhost:8082/login/oauth2/code/client-app")
+                .redirectUri("http://localhost:8082/api/v1/auth/authorization-success")
                 .scope("read")
                 .scope("write")
+                .scope("occ")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .tokenSettings(tokenSettings())
@@ -178,11 +181,18 @@ public class SecurityConfig {
     }
 
     @Bean
+    public HttpFirewall httpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowSemicolon(true);
+        return firewall;
+    }
+
+    @Bean
     public TokenSettings tokenSettings() {
         // Lấy giá trị jwtExpirationMs từ AuthService
         return TokenSettings.builder()
-                .accessTokenTimeToLive(Duration.ofMillis(3600000)) // 1 giờ (như jwtExpirationMs)
-                .refreshTokenTimeToLive(Duration.ofMillis(9000000)) // 2.5 giờ (như refreshExpirationDateInMs)
+                .accessTokenTimeToLive(Duration.ofMillis(3600000))
+                .refreshTokenTimeToLive(Duration.ofMillis(9000000))
                 .reuseRefreshTokens(true)
                 .build();
     }
@@ -190,7 +200,7 @@ public class SecurityConfig {
     @Bean
     public ClientSettings clientSettings() {
         return ClientSettings.builder()
-                .requireAuthorizationConsent(true) // Yêu cầu người dùng chấp thuận
+                .requireAuthorizationConsent(true)
                 .build();
     }
 
