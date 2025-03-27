@@ -1,8 +1,9 @@
 package tproject.tauthservice.controller;
 
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,35 +15,32 @@ import tproject.tauthservice.dto.request.SignupRequest;
 import tproject.tauthservice.dto.response.JwtResponse;
 import tproject.tauthservice.dto.response.SignUpResponse;
 import tproject.tauthservice.service.AuthService;
+import tproject.tcommon.enums.ResponseStatus;
+import tproject.tcommon.response.restfulresponse.RestfulResponse;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser( @RequestBody LoginRequest loginRequest) {
-        JwtResponse jwtResponse = authService.authenticateUser(loginRequest);
-        return ResponseEntity.ok(jwtResponse);
+    public RestfulResponse<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        log.info("Call api /api/v1/auth/signin with request: {}", loginRequest);
+        return authService.authenticateUser(loginRequest);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponse> registerUser(@RequestBody SignupRequest signupRequest) {
-        try {
-            SignUpResponse user = authService.registerUser(signupRequest);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            throw new RuntimeException("Error: Username is already taken!");
-        }
+    public RestfulResponse<SignUpResponse> registerUser(@RequestBody SignupRequest signupRequest) {
+        log.info("Call api /api/v1/auth/signup with request: {}", signupRequest);
+        return authService.registerUser(signupRequest);
     }
 
     @GetMapping("/authorization-success")
     public ResponseEntity<String> authorizationSuccess() {
         return ResponseEntity.ok("Authorization successful");
     }
-
-
 
 }

@@ -12,6 +12,8 @@ import lombok.NonNull;
 import lombok.Setter;
 import tproject.tcommon.model.BaseEntity;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -31,8 +33,6 @@ public class UserEntity extends BaseEntity {
     @NonNull
     private String lastName;
 
-    private String bio;
-
-    private String avatarUrl;
+    private LocalDate birthDate;
 
 }

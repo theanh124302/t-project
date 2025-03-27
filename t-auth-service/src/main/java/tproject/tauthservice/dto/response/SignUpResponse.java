@@ -12,6 +12,7 @@ import lombok.Setter;
 public class SignUpResponse {
 
     private Long id;
+
     private String username;
 
 }

@@ -28,14 +28,13 @@ import tproject.tauthservice.repository.RoleRepository;
 import tproject.tauthservice.repository.UserRepository;
 import tproject.tauthservice.entity.AuthenticationEntity;
 import tproject.tauthservice.repository.UserRoleRepository;
+import tproject.tcommon.enums.ResponseStatus;
+import tproject.tcommon.response.restfulresponse.RestfulResponse;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,21 +48,20 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
 
-    private static final int JWT_EXPIRATION_TIME = 3600000; // 1 hour
-    private static final int REFRESH_EXPIRATION_TIME = 9000000; // 2.5 hours
+    private static final int JWT_EXPIRATION_TIME = 3600000;
+    private static final int REFRESH_EXPIRATION_TIME = 9000000;
+    private static final String BEARER = "Bearer";
     private final AuthenticationRepository authenticationRepository;
     private final UserRoleRepository userRoleRepository;
 
-    public JwtResponse authenticateUser(LoginRequest loginRequest) {
+    public RestfulResponse<JwtResponse> authenticateUser(LoginRequest loginRequest) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         AuthenticationDto userDetails = (AuthenticationDto) authentication.getPrincipal();
-
-        log.info("User {} has been authenticated", userDetails);
+        log.info("User with id {} has been authenticated {}", userDetails.getUserId(), userDetails);
 
         String accessToken = generateAccessToken(userDetails);
         String refreshToken = generateRefreshToken(userDetails);
@@ -72,51 +70,61 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        return JwtResponse.builder()
+        JwtResponse jwtResponse = JwtResponse.builder()
                 .token(accessToken)
                 .refreshToken(refreshToken)
-                .tokenType("Bearer")
+                .tokenType(BEARER)
                 .id(userDetails.getUserId())
                 .username(userDetails.getUsername())
                 .roles(roles)
                 .expiresIn(JWT_EXPIRATION_TIME / 1000)
                 .build();
+
+        return RestfulResponse.success(jwtResponse, ResponseStatus.SUCCESS);
+
     }
 
     @Transactional
-    public SignUpResponse registerUser(SignupRequest signupRequest) {
+    public RestfulResponse<SignUpResponse> registerUser(SignupRequest signupRequest) {
 
-        UserEntity userEntity = userRepository.findByUsername(signupRequest.getUsername()).orElse(new UserEntity());
+        if (authenticationRepository.existsByUsername(signupRequest.getUsername())
+                || userRepository.existsByUsername(signupRequest.getUsername())) {
+            log.info("Username already exists: {}", signupRequest.getUsername());
+            return RestfulResponse.error("username.already.exists", ResponseStatus.ERROR);
+        }
+
+        AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+
+        UserEntity userEntity = new UserEntity();
 
         userEntity.setFirstName(signupRequest.getFirstName());
         userEntity.setLastName(signupRequest.getLastName());
         userEntity.setUsername(signupRequest.getUsername());
+        userEntity.setBirthDate(signupRequest.getBirthDate());
         Long userId = userRepository.save(userEntity).getId();
 
-        AuthenticationEntity authenticationEntity = authenticationRepository.findByUsername(signupRequest.getUsername())
-                .orElse(new AuthenticationEntity());
         authenticationEntity.setUserId(userId);
         authenticationEntity.setUsername(signupRequest.getUsername());
         authenticationEntity.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         authenticationRepository.save(authenticationEntity).getId();
 
-        List<RoleEntity> roles = roleRepository.findAllByNameIn(signupRequest.getRoles());
+        RoleEntity role = roleRepository.findByName(Role.USER);
+        UserRoleEntity userRoleEntity = UserRoleEntity.builder()
+                .userId(userId)
+                .roleId(role.getId())
+                .build();
+        userRoleRepository.save(userRoleEntity);
 
-        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
-        for (RoleEntity role : roles) {
-            userRoleEntities.add(UserRoleEntity.builder()
-                    .userId(userId)
-                    .roleId(role.getId())
-                    .build());
-        }
+        SignUpResponse signUpResponse = new SignUpResponse(userId, signupRequest.getUsername());
 
-        userRoleRepository.saveAll(userRoleEntities);
+        return RestfulResponse.success(signUpResponse, ResponseStatus.SUCCESS);
 
-        return new SignUpResponse(userId, signupRequest.getUsername());
     }
 
     private String generateAccessToken(AuthenticationDto userDetails) {
+
         Instant now = Instant.now();
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
@@ -128,9 +136,11 @@ public class AuthService {
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
     }
 
     private String generateRefreshToken(AuthenticationDto userDetails) {
+
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -141,5 +151,7 @@ public class AuthService {
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
     }
+
 }

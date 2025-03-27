@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import tproject.tauthservice.enumerates.Role;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,10 @@ public class SignupRequest {
     @NonNull
     private String lastName;
 
+    @NonNull
+    private LocalDate birthDate;
+
     @Enumerated(EnumType.STRING)
     private List<Role> roles;
+
 }

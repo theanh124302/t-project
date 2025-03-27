@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface AuthenticationRepository extends JpaRepository<AuthenticationEntity, Long> {
 
     Optional<AuthenticationEntity> findByUsername(String username);
+
+    Boolean existsByUsername(String username);
+
 }
