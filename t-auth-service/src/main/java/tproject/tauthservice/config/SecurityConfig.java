@@ -67,30 +67,35 @@ public class SecurityConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer();
-        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .with(authorizationServerConfigurer, authorizationServer ->
-                        authorizationServer
-                                .oidc(Customizer.withDefaults())
-                ).formLogin(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable);
-
-
-        return http
-                .build();
-    }
-
-    @Bean
-    @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http
+        http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/signin", "/api/v1/auth/signup").permitAll()
-                        .anyRequest().authenticated()
-                ).formLogin(Customizer.withDefaults())
+                        .anyRequest().authenticated())
+                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .with(authorizationServerConfigurer, authorizationServer ->
+                        authorizationServer
+                                .oidc(Customizer.withDefaults()))
+                .formLogin(Customizer.withDefaults());
+
+
+        return http
                 .build();
     }
+
+//    @Bean
+//    @Order(1)
+//    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+//        return http
+//                .cors(Customizer.withDefaults())
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/api/v1/auth/signin", "/api/v1/auth/signup").permitAll()
+//                        .anyRequest().authenticated())
+//                .formLogin(AbstractHttpConfigurer::disable)
+//                .build();
+//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
