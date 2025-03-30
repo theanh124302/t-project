@@ -1,5 +1,6 @@
 package tproject.tauthservice.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import tproject.tauthservice.config.KafkaProducerService;
+import tproject.tauthservice.dto.event.UserRegisteredEvent;
 import tproject.tauthservice.dto.response.JwtResponse;
 import tproject.tauthservice.dto.request.LoginRequest;
 import tproject.tauthservice.dto.request.SignupRequest;
@@ -32,8 +35,8 @@ import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +49,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaProducerService kafkaProducerService;
     private final JwtEncoder jwtEncoder;
+    private final EntityManager entityManager;
 
     private static final int JWT_EXPIRATION_TIME = 3600000;
     private static final int REFRESH_EXPIRATION_TIME = 9000000;
@@ -114,6 +119,15 @@ public class AuthService {
                 .roleId(role.getId())
                 .build();
         userRoleRepository.save(userRoleEntity);
+
+        UserRegisteredEvent userRegisteredEvent = UserRegisteredEvent.builder()
+                .userId(userId)
+                .username(signupRequest.getUsername())
+                .firstName(signupRequest.getFirstName())
+                .lastName(signupRequest.getLastName())
+                .registeredAt(LocalDateTime.now())
+                .build();
+        kafkaProducerService.sendUserRegistrationEvent(userRegisteredEvent);
 
         SignUpResponse signUpResponse = new SignUpResponse(userId, signupRequest.getUsername());
 

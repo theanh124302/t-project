@@ -1,0 +1,45 @@
+package tproject.tauthservice.config;
+
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.stereotype.Service;
+import tproject.tauthservice.dto.event.UserRegisteredEvent;
+
+import java.util.concurrent.CompletableFuture;
+
+@Service
+@RequiredArgsConstructor
+public class KafkaProducerService {
+
+    private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
+    private static final String USER_REGISTERED_TOPIC = "user-registered";
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    public void sendUserRegistrationEvent(UserRegisteredEvent event) {
+        log.info("Sending user registration event to Kafka: {}", event);
+        CompletableFuture<String> test = new CompletableFuture<>();
+        test.complete("test");
+        log.info("test: {}", test.getNow("default"));
+        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(USER_REGISTERED_TOPIC, event.getUserId().toString(), event);
+
+        future.whenComplete((result, ex) -> {
+
+            log.info("check thread: {}", Thread.currentThread().getName());
+            if (ex != null) {
+                log.error("Unable to send user registration event to Kafka: {}", ex.getMessage());
+            } else {
+                log.info("User registration event sent successfully to topic: {}, partition: {}, offset: {}",
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition(),
+                        result.getRecordMetadata().offset());
+            }
+        });
+        log.info("test: {}", test.getNow("default"));
+        log.info("check thread: {}", Thread.currentThread().getName());
+
+    }
+}

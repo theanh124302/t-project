@@ -7,17 +7,34 @@ spring:
     password: t-password
   jpa:
     generate-ddl: true
-    show-sql: true
+    show-sql: false  # Change this to false
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    consumer:
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring.json.trusted.packages: tproject.tauthservice.dto
+#        spring.json.type.mapping: event:tproject.tauthservice.dto.event.UserRegisteredEvent
+#        spring.json.use.type.headers: false
 
 
 server:
-  port: 8081
+  port: 8082
 
 logging:
   level:
     org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql: TRACE
+
+
