@@ -8,16 +8,10 @@ import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.message.ResponseMessage;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 import tproject.userservice.dto.request.tuser.UserInformationRequestDto;
-import tproject.userservice.dto.request.tuser.UserRegisterRequestDto;
 import tproject.userservice.dto.request.tuser.UserSearchRequestDto;
-import tproject.userservice.dto.request.tuser.UserUpdateRequestDto;
 import tproject.userservice.dto.response.tuser.UserInformationResponseDto;
-import tproject.userservice.dto.response.tuser.UserRegisterResponseDto;
-import tproject.userservice.dto.response.tuser.UserUpdateResponseDto;
 import tproject.userservice.entity.TUserEntity;
-import tproject.userservice.enumeration.UserResponseMessage;
-import tproject.userservice.mapper.TUserMapper;
-import tproject.userservice.repository.command.TUserRepository;
+import tproject.userservice.repository.TUserRepository;
 import tproject.userservice.service.TUserService;
 
 @Service
@@ -26,61 +20,24 @@ public class TUserServiceImpl implements TUserService {
 
     private static final Logger log = LoggerFactory.getLogger(TUserServiceImpl.class);
 
-    private final TUserMapper tUserMapper;
-
     private final TUserRepository tUserRepository;
 
     @Override
-    public RestfulResponse<UserRegisterResponseDto> registerUser(UserRegisterRequestDto userRegisterRequestDto) {
-
-        if (tUserRepository.findByUsername(userRegisterRequestDto.getUsername()).isPresent()) {
-            log.error("Username already exists: {}", userRegisterRequestDto.getUsername());
-            return RestfulResponse.error(UserResponseMessage.USERNAME_ALREADY_EXISTS, ResponseStatus.ERROR);
-        }
-
-        TUserEntity tUserEntity = tUserMapper.userRegisterRequestToEntity(userRegisterRequestDto);
-        TUserEntity savedUser = tUserRepository.save(tUserEntity);
-        UserRegisterResponseDto userRegisterResponseDto = tUserMapper.entityToUserRegisterResponse(savedUser);
-        return RestfulResponse.success(userRegisterResponseDto, ResponseStatus.SUCCESS);
-
-    }
-
-    @Override
-    public RestfulResponse<UserUpdateResponseDto> updateUser(UserUpdateRequestDto userUpdateRequestDto) {
-        Long userId = userUpdateRequestDto.getId();
+    public RestfulResponse<UserInformationResponseDto> getUserInformation(Long userId, Long actorId) {
+        log.info("Get user information request: userId={}, actorId={}", userId, actorId);
         TUserEntity tUserEntity = tUserRepository.findById(userId).orElse(null);
         if (tUserEntity == null) {
-            log.error("User not found with id: {}", userId);
+            log.error("User not found with userId: {}", userId);
             return RestfulResponse.error(ResponseMessage.NOT_FOUND, ResponseStatus.ERROR);
         }
-        tUserEntity.setBio(userUpdateRequestDto.getBio());
-        tUserEntity.setAvatarUrl(userUpdateRequestDto.getAvatarUrl());
-        tUserEntity.setFirstName(userUpdateRequestDto.getFirstName());
-        tUserEntity.setLastName(userUpdateRequestDto.getLastName());
-        tUserEntity.setUsername(userUpdateRequestDto.getUsername());
-        TUserEntity updatedUser = tUserRepository.save(tUserEntity);
-        UserUpdateResponseDto userUpdateResponseDto = tUserMapper.entityToUserUpdateResponse(updatedUser);
-        return RestfulResponse.success(userUpdateResponseDto, ResponseStatus.SUCCESS);
-    }
-
-    @Override
-    public RestfulResponse<UserInformationResponseDto> getUserInformation(UserInformationRequestDto userInformationRequestDto) {
-        log.info("Get user information with body: {}", userInformationRequestDto);
-        String username = userInformationRequestDto.getUsername();
-        TUserEntity tUserEntity = tUserRepository.findByUsername(username).orElse(null);
-        if (tUserEntity == null) {
-            log.error("User not found with username: {}", username);
-            return RestfulResponse.error(ResponseMessage.NOT_FOUND, ResponseStatus.ERROR);
-        }
-        UserInformationResponseDto userInformationResponseDto = tUserMapper.entityToUserInformationResponse(tUserEntity);
+        UserInformationResponseDto userInformationResponseDto = UserInformationResponseDto.builder()
+                .username(tUserEntity.getUsername())
+                .lastName(tUserEntity.getLastName())
+                .firstName(tUserEntity.getFirstName())
+                .birthDate(tUserEntity.getBirthDate())
+                .build();
         log.info("User information: {}", userInformationResponseDto);
         return RestfulResponse.success(userInformationResponseDto, ResponseStatus.SUCCESS);
     }
-
-    @Override
-    public RestfulResponse<UserSearchRequestDto> searchUser(UserSearchRequestDto userSearchRequestDto) {
-        return null;
-    }
-
 
 }

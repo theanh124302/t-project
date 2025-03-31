@@ -13,7 +13,19 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+            jwk-set-uri: http://localhost:8081/oauth2/jwks
 
 server:
-  port: 8081
+  port: 8082

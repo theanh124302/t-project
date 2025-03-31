@@ -1,4 +1,4 @@
-package tproject.tauthservice.config;
+package tproject.tauthservice.kafka.producer;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -12,9 +12,9 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
-public class KafkaProducerService {
+public class UserRegisteredProducer {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
+    private static final Logger log = LoggerFactory.getLogger(UserRegisteredProducer.class);
     private static final String USER_REGISTERED_TOPIC = "user-registered";
 
     private final KafkaTemplate<String, Object> kafkaTemplate;

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -20,8 +22,5 @@ public class UserInformationResponseDto {
 
     private String lastName;
 
-    private String bio;
-
-    private String avatarUrl;
-
+    private LocalDate birthDate;
 }

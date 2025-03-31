@@ -19,6 +19,4 @@ public class FollowUserDto {
 
     private String lastName;
 
-    private String avatarUrl;
-
 }

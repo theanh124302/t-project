@@ -17,9 +17,9 @@ public class FollowResponseDto {
 
     private Long id;
 
-    private String followerUsername;
+    private Long sourceUserId;
 
-    private String followingUsername;
+    private Long targetUserId;
 
     private FollowStatus status;
 

@@ -9,6 +9,8 @@ public class UserResponseMessage extends ResponseMessage {
     public static final String USER_CREATED = "user.created";
     public static final String CANNOT_FOLLOW_YOURSELF = "cannot.follow.yourself";
     public static final String USERNAME_CANNOT_BE_NULL = "username.cannot.be.null";
+    public static final String USER_ID_CANNOT_BE_NULL = "user.id.cannot.be.null";
     public static final String FOLLOW_NOT_FOUND = "follow.not.found";
+    public static final String USER_PRIVACY_NOT_FOUND = "user.privacy.not.found";
 
 }

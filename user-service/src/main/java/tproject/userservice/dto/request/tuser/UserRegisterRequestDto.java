@@ -26,8 +26,6 @@ public class UserRegisterRequestDto {
     @NonNull
     private String lastName;
 
-    private String bio;
-
-    private String avatarUrl;
+    private String birthDate;
 
 }

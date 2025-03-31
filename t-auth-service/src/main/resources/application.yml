@@ -21,14 +21,17 @@ spring:
 #    consumer:
 #      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 #      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-#      properties:
-#        spring.json.trusted.packages: tproject.tauthservice.dto
-#        spring.json.type.mapping: event:tproject.tauthservice.dto.event.UserRegisteredEvent
-#        spring.json.use.type.headers: false
+#    properties:
+#      spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+#      spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+#      spring.json.trusted.packages: tproject.tauthservice.dto.event
+#      spring.json.value.default.type: tproject.tauthservice.dto.event.UserRegisteredEvent
 
 
 server:
-  port: 8082
+  port: 8081
+  servlet:
+    context-path: /
 
 logging:
   level:

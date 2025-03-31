@@ -1,28 +1,22 @@
-package tproject.userservice.entity;
+package tproject.userservice.dto.response.privacy;
 
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tproject.tcommon.model.BaseEntity;
 import tproject.userservice.enumeration.UserPrivacy;
 
-@Entity
-@Table(name = "user_privacy")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class UserPrivacyEntity extends BaseEntity {
+public class UserPrivacyResponseDto {
 
     private Long userId;
 
-    @Column(name = "privacy_setting")
-    @Enumerated(EnumType.STRING)
     private UserPrivacy privacy;
 
 }

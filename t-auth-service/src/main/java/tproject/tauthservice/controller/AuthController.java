@@ -19,7 +19,7 @@ import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class AuthController {
 

@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import tproject.tauthservice.config.KafkaProducerService;
+import tproject.tauthservice.kafka.producer.UserRegisteredProducer;
 import tproject.tauthservice.dto.event.UserRegisteredEvent;
 import tproject.tauthservice.dto.response.JwtResponse;
 import tproject.tauthservice.dto.request.LoginRequest;
@@ -49,7 +49,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final KafkaProducerService kafkaProducerService;
+    private final UserRegisteredProducer userRegisteredProducer;
     private final JwtEncoder jwtEncoder;
     private final EntityManager entityManager;
 
@@ -94,6 +94,7 @@ public class AuthService {
 
         if (authenticationRepository.existsByUsername(signupRequest.getUsername())
                 || userRepository.existsByUsername(signupRequest.getUsername())) {
+            //todo: bloom filter
             log.info("Username already exists: {}", signupRequest.getUsername());
             return RestfulResponse.error("username.already.exists", ResponseStatus.ERROR);
         }
@@ -127,7 +128,7 @@ public class AuthService {
                 .lastName(signupRequest.getLastName())
                 .registeredAt(LocalDateTime.now())
                 .build();
-        kafkaProducerService.sendUserRegistrationEvent(userRegisteredEvent);
+        userRegisteredProducer.sendUserRegistrationEvent(userRegisteredEvent);
 
         SignUpResponse signUpResponse = new SignUpResponse(userId, signupRequest.getUsername());
 
@@ -143,7 +144,7 @@ public class AuthService {
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(JWT_EXPIRATION_TIME, ChronoUnit.MILLIS))
-                .subject(userDetails.getUsername())
+                .subject(String.valueOf(userDetails.getUserId()))
                 .claim("scope", userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(" ")))

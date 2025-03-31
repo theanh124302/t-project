@@ -6,6 +6,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 import tproject.tcommon.model.BaseEntity;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -14,8 +16,6 @@ import tproject.tcommon.model.BaseEntity;
 @AllArgsConstructor
 @Builder
 public class TUserEntity extends BaseEntity {
-
-    private Long authId;
 
     @NonNull
     @Column(unique = true)
@@ -27,8 +27,7 @@ public class TUserEntity extends BaseEntity {
     @NonNull
     private String lastName;
 
-    private String bio;
 
-    private String avatarUrl;
+    private LocalDate birthDate;
 
 }

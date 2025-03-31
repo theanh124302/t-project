@@ -11,12 +11,6 @@ import tproject.userservice.dto.response.tuser.UserUpdateResponseDto;
 
 public interface TUserService {
 
-    RestfulResponse<UserRegisterResponseDto> registerUser(UserRegisterRequestDto userRegisterRequestDto);
-
-    RestfulResponse<UserUpdateResponseDto> updateUser(UserUpdateRequestDto userUpdateRequestDto);
-
-    RestfulResponse<UserInformationResponseDto> getUserInformation(UserInformationRequestDto userInformationRequestDto);
-
-    RestfulResponse<UserSearchRequestDto> searchUser(UserSearchRequestDto userSearchRequestDto);
+    RestfulResponse<UserInformationResponseDto> getUserInformation(Long userId, Long actorId);
 
 }
