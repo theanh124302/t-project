@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/v1/signin", "/api/auth/v1/signup").permitAll()
+                        .requestMatchers("/v1/signin", "/v1/signup").permitAll()
                         .anyRequest().authenticated())
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, authorizationServer ->
@@ -85,13 +85,13 @@ public class SecurityConfig {
     }
 
 //    @Bean
-//    @Order(1)
+//    @Order(2)
 //    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 //        return http
 //                .cors(Customizer.withDefaults())
 //                .csrf(AbstractHttpConfigurer::disable)
 //                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/api/v1/auth/signin", "/api/v1/auth/signup").permitAll()
+//                        .requestMatchers("/auth/signin", "/auth/signup").permitAll()
 //                        .anyRequest().authenticated())
 //                .formLogin(AbstractHttpConfigurer::disable)
 //                .build();

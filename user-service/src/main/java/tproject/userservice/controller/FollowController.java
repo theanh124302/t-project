@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 import tproject.userservice.dto.response.follow.FollowResponseDto;
 import tproject.userservice.dto.response.follow.GetFollowerResponseDto;
@@ -25,30 +26,39 @@ public class FollowController {
 
     @PutMapping("/{userId}")
     public RestfulResponse<FollowResponseDto> follow(@PathVariable Long userId, Jwt jwt) {
-        return followService.followUser(userId, Long.parseLong(jwt.getSubject()));
+        Long currentUserId = Long.parseLong(jwt.getSubject());
+        FollowResponseDto responseDto = followService.followUser(userId, currentUserId);
+        return RestfulResponse.success(responseDto, ResponseStatus.SUCCESS);
     }
 
     @PutMapping("/unfollow/{userId}")
     public RestfulResponse<FollowResponseDto> unfollow(@PathVariable Long userId, Jwt jwt) {
-        return followService.unfollowUser(userId, Long.parseLong(jwt.getSubject()));
+        Long currentUserId = Long.parseLong(jwt.getSubject());
+        FollowResponseDto responseDto = followService.unfollowUser(userId, currentUserId);
+        return RestfulResponse.success(responseDto, ResponseStatus.SUCCESS);
     }
 
     @GetMapping("/get-followers/{userId}")
-    public RestfulResponse<GetFollowerResponseDto> getFollowers(@PathVariable Long userId,
-                                                                Jwt jwt,
-                                                                @RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "10") int size) {
+    public RestfulResponse<GetFollowerResponseDto> getFollowers(
+            @PathVariable Long userId,
+            Jwt jwt,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Long currentUserId = Long.parseLong(jwt.getSubject());
         Pageable pageable = PageRequest.of(page, size);
-        return followService.getFollowers(userId, Long.parseLong(jwt.getSubject()), pageable);
+        GetFollowerResponseDto responseDto = followService.getFollowers(userId, currentUserId, pageable);
+        return RestfulResponse.success(responseDto, ResponseStatus.SUCCESS);
     }
 
     @GetMapping("/get-followings/{userId}")
-    public RestfulResponse<GetFollowingResponseDto> getFollowings(@PathVariable Long userId,
-                                                                    Jwt jwt,
-                                                                  @RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size) {
+    public RestfulResponse<GetFollowingResponseDto> getFollowings(
+            @PathVariable Long userId,
+            Jwt jwt,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Long currentUserId = Long.parseLong(jwt.getSubject());
         Pageable pageable = PageRequest.of(page, size);
-        return followService.getFollowings(userId, Long.parseLong(jwt.getSubject()), pageable);
+        GetFollowingResponseDto responseDto = followService.getFollowings(userId, currentUserId, pageable);
+        return RestfulResponse.success(responseDto, ResponseStatus.SUCCESS);
     }
-
 }

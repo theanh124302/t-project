@@ -21,9 +21,7 @@ public class UserRegisteredProducer {
 
     public void sendUserRegistrationEvent(UserRegisteredEvent event) {
         log.info("Sending user registration event to Kafka: {}", event);
-        CompletableFuture<String> test = new CompletableFuture<>();
-        test.complete("test");
-        log.info("test: {}", test.getNow("default"));
+
         CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(USER_REGISTERED_TOPIC, event.getUserId().toString(), event);
 
         future.whenComplete((result, ex) -> {
@@ -38,7 +36,6 @@ public class UserRegisteredProducer {
                         result.getRecordMetadata().offset());
             }
         });
-        log.info("test: {}", test.getNow("default"));
         log.info("check thread: {}", Thread.currentThread().getName());
 
     }

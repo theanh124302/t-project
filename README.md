@@ -8,6 +8,9 @@ docker run --name t-postgres ^
 -d postgres:15
 
 
+docker run --name tp-postgres -e POSTGRES_DB=tp-db -e POSTGRES_USER=tp-user -e POSTGRES_PASSWORD=tp-password -p 5433:5432 -v D:/project/t-project/t-project-data-volume:/var/lib/postgresql/data -d postgres:15
+
+
 docker run -p 8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.1.4 start-dev
 
 # t-project
