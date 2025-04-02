@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/test")
 public class CompletableFutureLearning {
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     @GetMapping("/completable-future")
     public ResponseEntity<String> test() throws InterruptedException, ExecutionException {
@@ -34,8 +34,11 @@ public class CompletableFutureLearning {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            log.info("Operation 1 hoàn tất");
             return "Kết quả từ Operation 1";
         }, executorService);
+
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
 
         // 2. Tạo CompletableFuture từ runAsync
         CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
@@ -49,6 +52,8 @@ public class CompletableFutureLearning {
             log.info("Operation 2 hoàn tất");
         }, executorService);
 
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
+
         // 3. Biến đổi kết quả với thenApply
         CompletableFuture<Integer> future3 = future1.thenApply(result -> {
             String threadName = Thread.currentThread().getName();
@@ -61,6 +66,8 @@ public class CompletableFutureLearning {
             return result.length();
         });
 
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
+
         // 4. Thực hiện thenAccept để sử dụng kết quả
         CompletableFuture<Void> future4 = future3.thenAccept(length -> {
             String threadName = Thread.currentThread().getName();
@@ -72,6 +79,8 @@ public class CompletableFutureLearning {
             }
             log.info("Độ dài của chuỗi: {}", length);
         });
+
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
 
         // 5. Tạo CompletableFuture với thenCompose (flat map)
         CompletableFuture<String> future5 = future1.thenCompose(result -> {
@@ -86,6 +95,8 @@ public class CompletableFutureLearning {
                 return result + " + Kết quả từ Operation 5";
             }, executorService);
         });
+
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
 
         // 6. Kết hợp 2 CompletableFuture độc lập với thenCombine
         CompletableFuture<String> future6 = CompletableFuture.supplyAsync(() -> {
@@ -112,6 +123,8 @@ public class CompletableFutureLearning {
             return result1 + " + " + result2;
         });
 
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
+
         // 7. Chờ nhiều CompletableFuture với allOf
         List<CompletableFuture<?>> allFutures = new ArrayList<>();
         allFutures.add(future1);
@@ -121,9 +134,13 @@ public class CompletableFutureLearning {
         allFutures.add(future5);
         allFutures.add(future6);
 
+
+
         CompletableFuture<Void> allOf = CompletableFuture.allOf(
                 allFutures.toArray(new CompletableFuture[0])
         );
+
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
 
         // 8. Xử lý lỗi với exceptionally
         CompletableFuture<Object> futureWithError = CompletableFuture.supplyAsync(() -> {
@@ -140,6 +157,8 @@ public class CompletableFutureLearning {
             log.info("Xử lý lỗi đang chạy trên thread: {}", threadName);
             return "Đã xử lý lỗi: " + ex.getMessage();
         });
+
+        log.info("Thread chính vẫn chạy bình thường : {}", Thread.currentThread().getName());
 
         // 9. Thực hiện với kết quả hoặc xử lý lỗi với handle
         CompletableFuture<String> futureWithHandle = CompletableFuture.supplyAsync(() -> {
@@ -162,6 +181,8 @@ public class CompletableFutureLearning {
             }
             return "Handle xử lý kết quả: " + result;
         });
+
+        log.info("Thread chính vẫn chạy bình thường trước khi get : {}", Thread.currentThread().getName());
 
         // 10. CompletableFuture với timeout
         CompletableFuture<String> futureWithTimeout = CompletableFuture.supplyAsync(() -> {
@@ -268,4 +289,25 @@ public class CompletableFutureLearning {
 
         return ResponseEntity.ok("Manual completion test thành công: " + result);
     }
+
+    @GetMapping("/completable-future-nonblocking")
+    public CompletableFuture<ResponseEntity<String>> testNonBlocking() {
+        log.info("Bắt đầu endpoint non-blocking: {}", Thread.currentThread().getName());
+
+        return CompletableFuture.supplyAsync(() -> {
+                    String threadName = Thread.currentThread().getName();
+                    log.info("Operation đang chạy trên thread: {}", threadName);
+                    try {
+                        Thread.sleep(5000); // Mô phỏng xử lý dài
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return "Kết quả từ xử lý bất đồng bộ";
+                }, executorService)
+                .thenApply(result -> {
+                    log.info("Biến đổi kết quả trên thread: {}", Thread.currentThread().getName());
+                    return ResponseEntity.ok("Xử lý non-blocking hoàn thành: " + result);
+                });
+    }
+
 }
