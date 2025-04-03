@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
+import tproject.postwservice.enumeration.Visibility;
 import tproject.tcommon.model.BaseEntity;
 
 @Getter
@@ -21,6 +22,6 @@ public class PostEntity extends BaseEntity {
 
     private String status;
 
-    private String visibility;
+    private Visibility visibility;
 
 }
