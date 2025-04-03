@@ -20,6 +20,7 @@ configurations {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
@@ -29,6 +30,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.kafka:spring-kafka")
+	implementation("tproject:t-common:t-common-0.0.1")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("org.postgresql:r2dbc-postgresql")
