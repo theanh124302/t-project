@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
-import tproject.tcommon.model.BaseEntity;
 
 @Getter
 @Setter
@@ -15,7 +14,7 @@ import tproject.tcommon.model.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("post_comments")
-public class PostCommentEntity extends BaseEntity {
+public class PostCommentEntity extends ReactiveBaseEntity {
 
     private Long userId;
 

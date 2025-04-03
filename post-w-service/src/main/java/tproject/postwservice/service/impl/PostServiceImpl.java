@@ -20,7 +20,7 @@ public class PostServiceImpl implements PostService {
      private final PostContentRepository postContentRepository;
 
      @Override
-     public CreatePostResponse createPost(CreatePostRequest createPostRequest, Long actorId) {
+     public Mono<CreatePostResponse> createPost(CreatePostRequest createPostRequest, Long actorId) {
          PostEntity postEntity = PostEntity.builder()
                  .userId(actorId)
                  .status("DRAFT")
@@ -28,6 +28,21 @@ public class PostServiceImpl implements PostService {
                  .build();
 
          Mono<PostEntity> savedPost = postRepository.save(postEntity);
+         return savedPost.flatMap(post -> {
+             PostContentEntity postContentEntity = PostContentEntity.builder()
+                     .postId(post.getId())
+                     .content(createPostRequest.getPostContent().getContent())
+                     .build();
+
+             return postContentRepository.save(postContentEntity)
+                     .map(content -> CreatePostResponse.builder()
+                             .id(post.getId())
+                             .userId(post.getUserId())
+                             .status(post.getStatus())
+                             .visibility(post.getVisibility().name())
+                             .createdAt(post.getCreatedAt())
+                             .build());
+         });
 
      }
 

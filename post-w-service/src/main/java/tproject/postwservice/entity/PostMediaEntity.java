@@ -14,7 +14,7 @@ import tproject.postwservice.enumeration.MediaType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("post_medias")
-public class PostMediaEntity {
+public class PostMediaEntity extends ReactiveBaseEntity {
 
     private Long postId;
 

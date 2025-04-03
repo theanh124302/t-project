@@ -1,10 +1,11 @@
 package tproject.postwservice.service;
 
+import reactor.core.publisher.Mono;
 import tproject.postwservice.dto.Request.CreatePostRequest;
 import tproject.postwservice.dto.Response.CreatePostResponse;
 
 public interface PostService {
 
-    CreatePostResponse createPost(CreatePostRequest createPostRequest, Long actorId);
+    Mono<CreatePostResponse> createPost(CreatePostRequest createPostRequest, Long actorId);
 
 }

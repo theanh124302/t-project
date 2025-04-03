@@ -17,6 +17,11 @@ configurations {
 	compileOnly {
 		extendsFrom(configurations.annotationProcessor.get())
 	}
+	all {
+		exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
+		exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+		exclude(group = "org.springframework.boot", module = "spring-boot-starter-data-jpa")
+	}
 }
 
 repositories {

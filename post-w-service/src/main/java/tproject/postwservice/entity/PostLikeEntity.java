@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
-import tproject.tcommon.model.BaseEntity;
 
 @Getter
 @Setter
@@ -14,7 +13,7 @@ import tproject.tcommon.model.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("post_likes")
-public class PostLikeEntity extends BaseEntity {
+public class PostLikeEntity extends ReactiveBaseEntity {
 
     private Long userId;
 

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: post-w-service
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/tp-db
+    username: tp-user
+    password: tp-password
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 10
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8082/oauth2/jwks
+
+server:
+  port: 8083
