@@ -2,9 +2,9 @@ spring:
   application:
     name: post-w-service
   r2dbc:
-    url: r2dbc:postgresql://localhost:5433/tp-db
-    username: tp-user
-    password: tp-password
+    url: r2dbc:postgresql://localhost:8099/tpdb
+    username: tpu
+    password: tpp
     pool:
       enabled: true
       initial-size: 5
@@ -17,7 +17,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8082/oauth2/jwks
+          jwk-set-uri: http://localhost:8081/oauth2/jwks
 
 server:
   port: 8083

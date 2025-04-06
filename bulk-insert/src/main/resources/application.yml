@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: bulk-insert
+  datasource:
+    url: jdbc:postgresql://localhost:5432/t-db
+    username: t-user
+    password: t-password
+  jpa:
+    generate-ddl: true
+    show-sql: false  # Change this to false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

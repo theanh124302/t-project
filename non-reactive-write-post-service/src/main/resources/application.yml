@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: non-reactive-write-post-service

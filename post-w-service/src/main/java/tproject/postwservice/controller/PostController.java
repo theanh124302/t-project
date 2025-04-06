@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +28,9 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CreatePostResponse> createPostPublic(@RequestBody CreatePostRequest request) {
         log.info("Creating post with request: {}", request);
-        Long testUserId = 999L; // ID người dùng test
-        return postService.createPost(request, testUserId);
+
+        return postService.createPost(request, 99L)
+                .doOnSuccess(response -> log.info("Post created successfully: {}", response))
+                .doOnError(error -> log.error("Error creating post: {}", error.getMessage()));
     }
 }
