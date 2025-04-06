@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +45,12 @@ public class TranditionalTestApplication {
                 threadPoolSize, availableProcessors);
         return Executors.newFixedThreadPool(threadPoolSize);
     }
+
+//    @Bean
+//    public ExecutorService virtualThreadExecutor() {
+//        log.info("Initializing virtual thread executor");
+//        return Executors.newVirtualThreadPerTaskExecutor();
+//    }
 
 
     @RestController
@@ -75,41 +82,33 @@ public class TranditionalTestApplication {
 
             Instant start = Instant.now();
 
-            List<CompletableFuture<List<PostDto>>> results = new ArrayList<>();
+            List<CompletableFuture<Object>> results = new ArrayList<>();
 
             for (int i = 0; i < API_CALLS_PER_REQUEST; i++) {
 
                 String endpoint = TARGET_ENDPOINT + "?requestId=" + System.nanoTime();
 
-
-//                Object response = restClient.get()
-//                        .uri(endpoint)
-//                        .retrieve()
-//                        .body(Object.class);
-
-//				new Thread(() ->{
-//					restClient.get()
-//							.uri(endpoint)
-//							.retrieve()
-//							.body(Object.class);
-//					log.info("Asyn thread call API call: {}", Thread.currentThread().getName());
-//				}).start();
-
-//                executorService.submit(() -> {
-//                    log.info("Async thread call API call: {}", Thread.currentThread().getName());
-//                    restClient.get()
-//                            .uri(endpoint)
-//                            .retrieve()
-//                            .body(Object.class);
-//                });
-
-                CompletableFuture<List<PostDto>> future = CompletableFuture.supplyAsync(() -> {
+                CompletableFuture<Object> future = CompletableFuture.supplyAsync(() -> {
 					log.info("Async thread call API call: {}", Thread.currentThread().getName());
 					return restClient.get()
 							.uri(endpoint)
 							.retrieve()
-							.body(PostDto[].class);
-				}, executorService).thenApply(Arrays::asList);
+							.body(Object.class);
+				}, executorService);
+
+//                CompletableFuture<List<PostDto>> future = CompletableFuture.supplyAsync(() -> {
+//                    try {
+//                        log.info("Virtual thread call API: {}", Thread.currentThread().getName());
+//                        PostDto[] posts = restClient.get()
+//                                .uri(endpoint)
+//                                .retrieve()
+//                                .body(PostDto[].class);
+//                        return Arrays.asList(posts);
+//                    } catch (Exception e) {
+//                        log.error("Error calling API: {}", e.getMessage());
+//                        return List.of();
+//                    }
+//                }, executorService);
 
                 results.add(future);
 
@@ -133,22 +132,6 @@ public class TranditionalTestApplication {
 
             return totalProcessingTime;
         }
-    }
-
-    static class PostDto {
-        private int userId;
-        private int id;
-        private String title;
-        private String body;
-
-        public int getUserId() { return userId; }
-        public void setUserId(int userId) { this.userId = userId; }
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
-        public String getTitle() { return title; }
-        public void setTitle(String title) { this.title = title; }
-        public String getBody() { return body; }
-        public void setBody(String body) { this.body = body; }
     }
 
 }
