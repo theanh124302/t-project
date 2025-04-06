@@ -46,20 +46,14 @@ public class VirtualThreadsTestApplication {
 
         private final RestClient restClient;
 
-        // Target endpoint from JSONPlaceholder
         private static final String TARGET_ENDPOINT = "/posts";
 
-        // Number of external API calls to make per client request
         private static final int API_CALLS_PER_REQUEST = 5;
 
         public VirtualThreadsBenchmarkController(RestClient restClient) {
             this.restClient = restClient;
         }
 
-        /**
-         * Simple benchmark endpoint that makes multiple API calls
-         * for each client request
-         */
         @GetMapping("/api")
         public Map<String, Object> handleApiRequest() {
             Instant start = Instant.now();
@@ -67,10 +61,6 @@ public class VirtualThreadsTestApplication {
             log.info("Thread before API calls: {}", Thread.currentThread().getName());
 
             List<Object> results = new ArrayList<>();
-
-            Instant requestStart;
-
-            Instant responseTime;
 
             // Each client request triggers multiple API calls to external service
             for (int i = 0; i < API_CALLS_PER_REQUEST; i++) {
@@ -80,20 +70,11 @@ public class VirtualThreadsTestApplication {
 
                 String endpoint = TARGET_ENDPOINT + "?requestId=" + System.nanoTime();
 
-                requestStart = Instant.now();
-
                 Object response = restClient.get()
                         .uri(endpoint)
                         .retrieve()
                         .body(Object.class);
 
-                responseTime = Instant.now();
-
-                log.info(("api {} call took {} ms"),i,  Duration.between(requestStart, responseTime).toMillis());
-
-                log.info("Thread after API call {}: {}", i, Thread.currentThread().getName());
-
-                results.add(response);
 
             }
 

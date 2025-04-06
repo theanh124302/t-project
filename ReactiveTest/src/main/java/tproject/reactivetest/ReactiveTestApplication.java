@@ -37,61 +37,49 @@ public class ReactiveTestApplication {
 
         private final WebClient webClient;
 
-        // Target endpoint from JSONPlaceholder
         private static final String TARGET_ENDPOINT = "/posts";
 
-        // Number of external API calls to make per client request
         private static final int API_CALLS_PER_REQUEST = 5;
 
         public ReactiveBenchmarkController(WebClient webClient) {
             this.webClient = webClient;
         }
 
-        /**
-         * Simple benchmark endpoint that makes multiple API calls
-         * for each client request using reactive approach
-         */
         @GetMapping("/api")
-        public Mono<Map<String, Object>> handleApiRequest() {
+        public Mono<Long> handleApiRequest() {
             Instant start = Instant.now();
 
             log.info("Thread before API calls: {}", Thread.currentThread().getName());
 
-            // Create a Flux that will make the API calls sequentially
             return Flux.range(0, API_CALLS_PER_REQUEST)
                     .flatMap(i -> {
                         log.info("Thread during API call {}: {}", i, Thread.currentThread().getName());
 
-                        // Add a query parameter to avoid caching
                         String endpoint = TARGET_ENDPOINT + "?requestId=" + System.nanoTime();
-
-                        Instant requestStart = Instant.now();
 
                         return webClient.get()
                                 .uri(endpoint)
                                 .retrieve()
-                                .bodyToMono(Object.class)
-                                .doOnNext(response -> {
-                                    Instant responseTime = Instant.now();
-                                    log.info("api {} call took {} ms", i,
-                                            Duration.between(requestStart, responseTime).toMillis());
-                                    log.info("Thread after API call {}: {}", i, Thread.currentThread().getName());
-                                });
+                                .bodyToMono(Object.class);
                     })
                     .collectList()
                     .map(results -> {
+
+
                         log.info("Thread after API calls: {}", Thread.currentThread().getName());
+
+                        log.info("results: {}", results);
 
                         Instant end = Instant.now();
                         Duration duration = Duration.between(start, end);
 
-                        log.info("Total processing time: {} ms", duration.toMillis());
+                        long processingTime = duration.toMillis();
+
+                        log.info("Total processing time: {} ms", processingTime);
 
                         Map<String, Object> response = new HashMap<>();
-                        response.put("serverProcessingTimeMs", duration.toMillis());
-                        response.put("externalApiCallsMade", API_CALLS_PER_REQUEST);
 
-                        return response;
+                        return processingTime;
                     });
         }
     }
