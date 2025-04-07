@@ -7,8 +7,8 @@ spring:
     password: tpp
     pool:
       enabled: true
-      initial-size: 5
-      max-size: 10
+      initial-size: 50
+      max-size: 100
   data:
     r2dbc:
       repositories:

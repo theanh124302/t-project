@@ -1,4 +1,15 @@
 spring:
   application:
     name: ReactiveTest
-
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/t-db
+    username: t-user
+    password: t-password
+    pool:
+      enabled: true
+      initial-size: 50
+      max-size: 100
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
