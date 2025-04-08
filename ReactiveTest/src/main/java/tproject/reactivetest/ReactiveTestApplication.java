@@ -26,6 +26,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.random.RandomGenerator;
 
+import static java.lang.Thread.sleep;
+
 @SpringBootApplication
 public class ReactiveTestApplication {
 
@@ -41,6 +43,8 @@ public class ReactiveTestApplication {
                 .baseUrl("https://jsonplaceholder.typicode.com")
                 .build();
     }
+
+
 
 //    @Bean
 //    public RestClient restClient() {
@@ -67,8 +71,16 @@ public class ReactiveTestApplication {
 
         }
 
+        private Long getRandomLong() throws InterruptedException {
+            log.info("Thread run blocking call: {}", Thread.currentThread().getName());
+            Random random = new Random();
+            sleep(250);
+            return random.nextLong();
+        }
+
+
         @GetMapping("/api")
-        public Mono<Long> handleApiRequest() {
+        public Mono<Long> handleApiRequest() throws InterruptedException {
 
             UUID requestId = UUID.randomUUID();
 
@@ -126,6 +138,16 @@ public class ReactiveTestApplication {
                         .doOnSubscribe(s -> log.info("Starting API call {}: {} on requestId: {}",
                                 index, Thread.currentThread().getName(), requestId))
                         .doOnNext(result -> log.info("Completed API call"));
+
+//                Mono<Long> testBlocking = Mono.fromCallable(() -> {
+//                            log.info("Executing blocking operation on thread: {}", Thread.currentThread().getName());
+//                            return getRandomLong();
+//                        })
+//                        .subscribeOn(Schedulers.boundedElastic())
+//                        .doOnSubscribe(s -> log.info("Starting blocking call {}: {} on requestId: {}",
+//                                index, Thread.currentThread().getName(), requestId))
+//                        .doOnNext(result -> log.info("Completed blocking call {}: {} on requestId: {}",
+//                                index, Thread.currentThread().getName(), requestId));
 
                 operations.add(apiCall);
             }
