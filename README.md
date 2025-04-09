@@ -17,3 +17,24 @@ docker run --name t-postgres ^
 -d postgres:15
 
 docker run -p 8095:8095 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui
+
+-- Tạo keyspace
+CREATE KEYSPACE example_keyspace
+WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+-- Sử dụng keyspace
+USE example_keyspace;
+
+-- Tạo bảng
+CREATE TABLE users (
+  user_id uuid PRIMARY KEY,
+  name text,
+  email text
+);
+
+-- Chèn dữ liệu
+INSERT INTO users (user_id, name, email)
+VALUES (uuid(), 'Nguyen Van A', 'nguyenvana@example.com');
+
+-- Truy vấn dữ liệu
+SELECT user_id FROM users;
