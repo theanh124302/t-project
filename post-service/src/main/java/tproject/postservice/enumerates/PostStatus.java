@@ -1,0 +1,29 @@
+package tproject.postservice.enumerates;
+
+public enum PostStatus {
+    DRAFT,
+    PUBLISHED,
+    ARCHIVED,
+    DELETED,
+    HIDDEN,
+    BLOCKED,
+    REPORTED,
+    SUSPENDED,
+    INACTIVE,
+    ACTIVE,
+    PENDING,
+    APPROVED,
+    REJECTED,
+    UNDER_REVIEW,
+    UNDER_MODERATION,
+    UNDER_INVESTIGATION,
+    UNDER_REVIEWING,
+    UNDER_VERIFICATION,
+    UNDER_APPROVAL,
+    UNDER_SUSPENSION,
+    UNDER_BLOCKING,
+    UNDER_DELETION,
+    UNDER_ARCHIVING,
+    UNDER_HIDING,
+
+}
