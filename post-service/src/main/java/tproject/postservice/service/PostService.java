@@ -2,10 +2,13 @@ package tproject.postservice.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import tproject.postservice.dto.request.CreatePostRequest;
 import tproject.postservice.dto.response.CreatedPostResponse;
 import tproject.postservice.entity.PostEntity;
 import tproject.postservice.enumerates.Visibility;
 import tproject.postservice.repository.PostRepository;
+
+import java.util.Iterator;
 
 @Service
 @AllArgsConstructor
@@ -13,19 +16,20 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public CreatedPostResponse createPost(String content, Long userId) {
-        // Create a new post entity
+    public CreatedPostResponse createPost(CreatePostRequest request, Long userId) {
+
         PostEntity postEntity = PostEntity.builder()
                 .userId(userId)
                 .status("active")
                 .hidden(false)
+                .content(request.getContent())
                 .visibility(Visibility.PUBLIC)
                 .build();
 
-        // Save the post entity to the database
-        PostEntity savedPost = postRepository.save(postEntity).block();
+        PostEntity savedPost = postRepository.save(postEntity);
 
-        // Create a new post content entity
+        Iterator<CreatePostRequest.Media> mediaIterator = request.getPostMedia().
+
         PostContentEntity postContentEntity = PostContentEntity.builder()
                 .postId(savedPost.getId())
                 .content(content)

@@ -24,18 +24,9 @@ public class CreatePostRequest {
 
     private Instant createdAt;
 
-    private Content postContent;
+    private String content;
 
     private Media postMedia;
-
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Content {
-        private String text;
-    }
 
     @Getter
     @Setter

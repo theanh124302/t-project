@@ -27,6 +27,8 @@ public class PostEntity extends BaseEntity {
 
     private Boolean hidden;
 
+    private String content;
+
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
