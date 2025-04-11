@@ -1,11 +1,14 @@
 package tproject.postservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tproject.postservice.dto.request.CreatePostRequest;
 import tproject.postservice.dto.response.CreatedPostResponse;
+import tproject.postservice.entity.MediaEntity;
 import tproject.postservice.entity.PostEntity;
 import tproject.postservice.enumerates.Visibility;
+import tproject.postservice.repository.MediaRepository;
 import tproject.postservice.repository.PostRepository;
 
 import java.util.Iterator;
@@ -16,6 +19,9 @@ public class PostService {
 
     private final PostRepository postRepository;
 
+    private final MediaRepository mediaRepository;
+
+    @Transactional
     public CreatedPostResponse createPost(CreatePostRequest request, Long userId) {
 
         PostEntity postEntity = PostEntity.builder()
@@ -28,20 +34,19 @@ public class PostService {
 
         PostEntity savedPost = postRepository.save(postEntity);
 
-        Iterator<CreatePostRequest.Media> mediaIterator = request.getPostMedia().
-
-        PostContentEntity postContentEntity = PostContentEntity.builder()
+        MediaEntity media = MediaEntity.builder()
                 .postId(savedPost.getId())
-                .content(content)
+                .mediaType(request.getPostMedia().getMediaType())
+                .mediaUrl(request.getPostMedia().getMediaUrl())
                 .build();
 
-        // Save the post content entity to the database
-        postContentRepository.save(postContentEntity).block();
+        MediaEntity savedMedia = mediaRepository.save(media);
 
         return CreatedPostResponse.builder()
                 .postId(savedPost.getId())
-                .content(content)
+                .content(savedPost.getContent())
+                .mediaUrl(savedMedia.getMediaUrl())
                 .build();
-    }
 
+    }
 }
