@@ -7,10 +7,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatedPostResponse {
+public class CreatedPostResponseDTO {
 
     private Long postId;
+
     private String content;
+
+    private String preSignedUrl;
+
     private String mediaUrl;
 
 }

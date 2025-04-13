@@ -10,13 +10,14 @@ import tproject.postservice.enumerates.MediaType;
 import tproject.postservice.enumerates.Visibility;
 
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePostRequest {
+public class CreatePostRequestDTO {
 
     private String status;
 
@@ -26,17 +27,9 @@ public class CreatePostRequest {
 
     private String content;
 
-    private Media postMedia;
+    List<Long> viewableUser;
 
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Media {
-        private String mediaUrl;
-        private MediaType mediaType;
-    }
+    private MediaType mediaType;
 
 }
 

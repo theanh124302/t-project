@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tproject.postservice.enumerates.PostStatus;
 import tproject.postservice.enumerates.Visibility;
 import tproject.tcommon.model.BaseEntity;
 
@@ -23,11 +24,17 @@ public class PostEntity extends BaseEntity {
 
     private Long userId;
 
-    private String status;
+    private PostStatus status;
 
     private Boolean hidden;
 
     private String content;
+
+    boolean commentable;
+
+    boolean shareable;
+
+    boolean likeable;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility;

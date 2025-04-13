@@ -3,15 +3,14 @@ package tproject.postservice.service;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import tproject.postservice.dto.request.CreatePostRequest;
-import tproject.postservice.dto.response.CreatedPostResponse;
+import org.springframework.web.multipart.MultipartFile;
+import tproject.postservice.dto.request.CreatePostRequestDTO;
+import tproject.postservice.dto.response.CreatedPostResponseDTO;
 import tproject.postservice.entity.MediaEntity;
 import tproject.postservice.entity.PostEntity;
-import tproject.postservice.enumerates.Visibility;
+import tproject.postservice.enumerates.PostStatus;
 import tproject.postservice.repository.MediaRepository;
 import tproject.postservice.repository.PostRepository;
-
-import java.util.Iterator;
 
 @Service
 @AllArgsConstructor
@@ -22,31 +21,38 @@ public class PostService {
     private final MediaRepository mediaRepository;
 
     @Transactional
-    public CreatedPostResponse createPost(CreatePostRequest request, Long userId) {
+    public CreatedPostResponseDTO createLightPost(CreatePostRequestDTO request, Long userId, MultipartFile uploadMedia) {
 
-        PostEntity postEntity = PostEntity.builder()
-                .userId(userId)
-                .status("active")
-                .hidden(false)
-                .content(request.getContent())
-                .visibility(Visibility.PUBLIC)
-                .build();
-
-        PostEntity savedPost = postRepository.save(postEntity);
+        PostEntity postEntity = initPostEntity(request, userId);
 
         MediaEntity media = MediaEntity.builder()
-                .postId(savedPost.getId())
-                .mediaType(request.getPostMedia().getMediaType())
-                .mediaUrl(request.getPostMedia().getMediaUrl())
+                .postId(postEntity.getId())
+                .mediaType(request.getMediaType())
                 .build();
 
         MediaEntity savedMedia = mediaRepository.save(media);
 
-        return CreatedPostResponse.builder()
-                .postId(savedPost.getId())
-                .content(savedPost.getContent())
+        return CreatedPostResponseDTO.builder()
+                .postId(postEntity.getId())
+                .content(postEntity.getContent())
                 .mediaUrl(savedMedia.getMediaUrl())
                 .build();
+
+    }
+
+    private PostEntity initPostEntity(CreatePostRequestDTO request, Long userId) {
+
+        PostEntity postEntity = PostEntity.builder()
+                .userId(userId)
+                .status(PostStatus.INITIAL)
+                .hidden(false)
+                .content(request.getContent())
+                .visibility(request.getVisibility())
+                .build();
+
+        PostEntity savedPost = postRepository.save(postEntity);
+
+        return savedPost;
 
     }
 }

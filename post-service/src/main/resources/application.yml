@@ -13,3 +13,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+cloud:
+  aws:
+    credentials:
+    region:
+      static: ap-southeast-1
+    bucket:
+      name: t-p-bucket
+    cloudfront:
+      domain: https://d20fdb851jr426.cloudfront.net
