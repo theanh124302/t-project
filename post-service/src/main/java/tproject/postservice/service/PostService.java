@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tproject.postservice.dto.request.CreatePostRequestDTO;
 import tproject.postservice.dto.response.CreatedPostResponseDTO;
-import tproject.postservice.entity.MediaEntity;
+import tproject.postservice.entity.FileEntity;
 import tproject.postservice.entity.PostEntity;
 import tproject.postservice.enumerates.PostStatus;
 import tproject.postservice.repository.MediaRepository;
@@ -25,17 +25,9 @@ public class PostService {
 
         PostEntity postEntity = initPostEntity(request, userId);
 
-        MediaEntity media = MediaEntity.builder()
-                .postId(postEntity.getId())
-                .mediaType(request.getMediaType())
-                .build();
-
-        MediaEntity savedMedia = mediaRepository.save(media);
-
         return CreatedPostResponseDTO.builder()
                 .postId(postEntity.getId())
                 .content(postEntity.getContent())
-                .mediaUrl(savedMedia.getMediaUrl())
                 .build();
 
     }

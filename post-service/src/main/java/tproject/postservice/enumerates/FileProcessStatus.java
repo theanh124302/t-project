@@ -1,6 +1,6 @@
 package tproject.postservice.enumerates;
 
-public enum MediaProcessStatus {
+public enum FileProcessStatus {
     INITIAL,
     PENDING,
     PROCESSING,

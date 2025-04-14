@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tproject.postservice.enumerates.MediaType;
+import tproject.postservice.enumerates.FileType;
 import tproject.postservice.enumerates.Visibility;
 
 import java.time.Instant;
@@ -29,7 +29,7 @@ public class CreatePostRequestDTO {
 
     List<Long> viewableUser;
 
-    private MediaType mediaType;
+    private FileType fileType;
 
 }
 

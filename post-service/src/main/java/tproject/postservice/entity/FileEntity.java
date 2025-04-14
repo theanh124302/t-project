@@ -9,28 +9,30 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tproject.postservice.enumerates.MediaProcessStatus;
-import tproject.postservice.enumerates.MediaType;
+import tproject.postservice.enumerates.FileProcessStatus;
+import tproject.postservice.enumerates.FileType;
 import tproject.tcommon.model.BaseEntity;
 
 @Entity
-@Table(name = "medias")
+@Table(name = "files")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MediaEntity extends BaseEntity {
+public class FileEntity extends BaseEntity {
 
     private Long postId;
 
     @Enumerated(EnumType.STRING)
-    private MediaType mediaType;
+    private FileType fileType;
 
-    private String mediaUrl;
+    private String fileUrl;
+
+    private String preSignedUrl;
 
     @Enumerated(EnumType.STRING)
-    private MediaProcessStatus status;
+    private FileProcessStatus status;
 
     private Boolean hidden;
 

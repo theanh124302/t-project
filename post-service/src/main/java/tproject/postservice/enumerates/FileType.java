@@ -1,6 +1,6 @@
 package tproject.postservice.enumerates;
 
-public enum MediaType {
+public enum FileType {
     IMAGE,
     VIDEO,
     AUDIO,
