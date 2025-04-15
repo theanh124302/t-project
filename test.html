@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Mẫu cho S3 Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin-bottom: 20px;
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Mẫu HTML Cho S3</h1>
+        
+        <div class="highlight">
+            <p>File này đã được tạo thành công và tải lên S3 bằng presigned URL.</p>
+        </div>
+        
+        <h2>Thông tin về Presigned URL</h2>
+        <p>Presigned URL là một URL tạm thời được tạo bởi AWS S3, cho phép người dùng thực hiện các hành động cụ thể (như tải lên hoặc tải xuống) mà không cần có thông tin xác thực AWS trực tiếp.</p>
+        
+        <h2>Ứng dụng</h2>
+        <p>Presigned URL thường được sử dụng trong các trường hợp:</p>
+        <ul>
+            <li>Cho phép người dùng tải lên tệp trực tiếp vào S3 từ trình duyệt</li>
+            <li>Chia sẻ tệp tạm thời mà không cần cấp quyền truy cập lâu dài</li>
+            <li>Tạo các liên kết tải xuống có thời hạn</li>
+        </ul>
+        
+        <h2>Thời gian</h2>
+        <p>File này được tạo vào: <span id="current-time"></span></p>
+        
+        <script>
+            // Hiển thị thời gian hiện tại
+            document.getElementById('current-time').textContent = new Date().toLocaleString();
+        </script>
+    </div>
+    
+    <footer>
+        <p>© 2025 - File mẫu cho S3 Upload Test</p>
+    </footer>
+</body>
+</html>
