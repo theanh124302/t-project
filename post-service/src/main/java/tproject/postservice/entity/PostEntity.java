@@ -24,6 +24,7 @@ public class PostEntity extends BaseEntity {
 
     private Long userId;
 
+    @Enumerated(EnumType.STRING)
     private PostStatus status;
 
     private Boolean hidden;

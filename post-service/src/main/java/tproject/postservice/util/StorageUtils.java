@@ -71,13 +71,12 @@ public class StorageUtils {
         return url.toString();
     }
 
-    public String uploadPublicFile(String bucketName, String fileName, File file) {
+    public String uploadPrivateFile(String bucketName, String fileName, File file) {
         if(fileName == null){
             fileName = "null";
         }
         String keyFile = generateKeyFile(fileName);
-        PutObjectRequest uploadRequest = new PutObjectRequest(bucketName, keyFile, file)
-                .withCannedAcl(com.amazonaws.services.s3.model.CannedAccessControlList.PublicRead);
+        PutObjectRequest uploadRequest = new PutObjectRequest(bucketName, keyFile, file);
         s3Client.putObject(uploadRequest);
         return s3Client.getUrl(bucketName, keyFile).toString();
     }

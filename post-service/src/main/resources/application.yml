@@ -13,6 +13,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8081/oauth2/jwks
 cloud:
   aws:
     credentials:
@@ -22,3 +27,6 @@ cloud:
       name: taprojectbucket
     cloudfront:
       domain: https://d2ruc5i3jjzsgg.cloudfront.net
+
+server:
+  port: 8083

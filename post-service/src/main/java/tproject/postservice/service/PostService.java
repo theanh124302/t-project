@@ -53,7 +53,7 @@ public class PostService {
             try {
                 File file = convertMultiPartToFile(uploadMedia);
                 String fileName = uploadMedia.getOriginalFilename();
-                String fileUrl = storageUtils.uploadPublicFile(BUCKET_NAME, fileName,file);
+                String fileUrl = storageUtils.uploadPrivateFile(BUCKET_NAME, fileName,file);
 
                 FileEntity fileEntity = FileEntity.builder()
                         .postId(postEntity.getId())
