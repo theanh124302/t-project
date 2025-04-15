@@ -16,9 +16,10 @@ spring:
 cloud:
   aws:
     credentials:
+
     region:
       static: ap-southeast-1
     bucket:
-      name: t-p-bucket
+      name: taprojectbucket
     cloudfront:
-      domain: https://d20fdb851jr426.cloudfront.net
+      domain: https://d2ruc5i3jjzsgg.cloudfront.net

@@ -13,8 +13,9 @@ public class ImageHandleDto extends FileHandleDto {
     private String format;
     private Boolean hasAlpha;
     private String thumbnailKey;
-    private CacheControl cacheControl; // Chiến lược cache cho image
+    private CacheControl cacheControl;
 
+    @Getter
     public enum CacheControl {
         PUBLIC("public, max-age=31536000"),
         PRIVATE("private, max-age=3600"),
@@ -26,9 +27,6 @@ public class ImageHandleDto extends FileHandleDto {
             this.value = value;
         }
 
-        public String getValue() {
-            return value;
-        }
     }
 
     public ImageHandleDto(String fileName, String fileType) {

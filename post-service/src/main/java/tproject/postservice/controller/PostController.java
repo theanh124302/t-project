@@ -1,8 +1,13 @@
 package tproject.postservice.controller;
 
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +19,11 @@ import tproject.postservice.service.PostService;
 import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+@Slf4j
 @RestController
 @RequestMapping("/v1")
 @AllArgsConstructor
@@ -24,13 +34,23 @@ public class PostController {
 
     @PostMapping("/create/light")
     public RestfulResponse<CreatedPostResponseDTO> createLightPost(@RequestBody CreatePostRequestDTO createPostRequestDTO,
-                                                                   MultipartFile media,
+                                                                   MultipartFile file,
                                                                    Jwt jwt) {
         Long userId = Long.parseLong(jwt.getSubject());
-        CreatedPostResponseDTO createdPostResponseDTO = postService.createLightPost(createPostRequestDTO, userId, media);
+        CreatedPostResponseDTO createdPostResponseDTO = postService.createLightPost(createPostRequestDTO, userId, file);
         return RestfulResponse
                 .success(createdPostResponseDTO, ResponseStatus.SUCCESS);
 
+    }
+
+    @GetMapping("/test")
+    public RestfulResponse<String> test() {
+
+        log.info("hello ta");
+
+        postService.test();
+        return RestfulResponse
+                .success("test", ResponseStatus.SUCCESS);
     }
 
 }

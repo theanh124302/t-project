@@ -1,5 +1,8 @@
 package tproject.postservice.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,14 @@ import tproject.postservice.enumerates.PostStatus;
 import tproject.postservice.repository.MediaRepository;
 import tproject.postservice.repository.PostRepository;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class PostService {
@@ -20,10 +31,17 @@ public class PostService {
 
     private final MediaRepository mediaRepository;
 
+    private final AmazonS3 s3Client;
+
     @Transactional
     public CreatedPostResponseDTO createLightPost(CreatePostRequestDTO request, Long userId, MultipartFile uploadMedia) {
 
         PostEntity postEntity = initPostEntity(request, userId);
+
+
+
+//        PutObjectRequest uploadRequest = (new PutObjectRequest("taprojectbucket", UUID.randomUUID().toString(), convertMultiPartToFile(uploadMedia))).withCannedAcl(CannedAccessControlList.PublicRead);
+
 
         return CreatedPostResponseDTO.builder()
                 .postId(postEntity.getId())
@@ -42,9 +60,36 @@ public class PostService {
                 .visibility(request.getVisibility())
                 .build();
 
-        PostEntity savedPost = postRepository.save(postEntity);
-
-        return savedPost;
+        return postRepository.save(postEntity);
 
     }
+
+
+    public void test() {
+        try {
+            File file = generateHtmlFile("test", "temp.html");
+            PutObjectRequest uploadRequest = (new PutObjectRequest("taprojectbucket", UUID.randomUUID().toString(), file)).withCannedAcl(CannedAccessControlList.PublicRead);
+            s3Client.putObject(uploadRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        FileOutputStream fos = new FileOutputStream(convertedFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convertedFile;
+    }
+
+    private File generateHtmlFile(String htmlContent, String filePath) throws IOException {
+        File file = new File(filePath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(htmlContent);
+        }
+        return file;
+    }
+
 }
