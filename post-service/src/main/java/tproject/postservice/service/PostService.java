@@ -1,7 +1,10 @@
 package tproject.postservice.service;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -20,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -73,6 +78,28 @@ public class PostService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String genPreSignedUrl() {
+
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime() + 3 * 60 * 1000;
+        expiration.setTime(expTimeMillis);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest("taprojectbucket", UUID.randomUUID().toString())
+                .withMethod(HttpMethod.PUT)
+                .withExpiration(expiration);
+
+        generatePresignedUrlRequest.addRequestParameter(
+                Headers.CONTENT_TYPE,
+                "text/html"
+        );
+
+        URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
+
+//        String cloudFrontUrl = HTTPS_URL + cloudFrontDomain + SLASH + fileKey;
+
+        return url.toString();
     }
 
 

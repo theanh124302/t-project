@@ -45,12 +45,19 @@ public class PostController {
 
     @GetMapping("/test")
     public RestfulResponse<String> test() {
-
-        log.info("hello ta");
-
         postService.test();
         return RestfulResponse
                 .success("test", ResponseStatus.SUCCESS);
+    }
+
+    @GetMapping("/test-generate-presigned-url")
+    public RestfulResponse<String> testGeneratePresignedUrl() {
+
+        log.info("test generate presigned url");
+
+        String presignedUrl = postService.genPreSignedUrl();
+        return RestfulResponse
+                .success(presignedUrl, ResponseStatus.SUCCESS);
     }
 
 }
