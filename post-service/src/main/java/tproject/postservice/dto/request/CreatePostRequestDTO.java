@@ -23,5 +23,7 @@ public class CreatePostRequestDTO {
 
     List<Long> viewableUser;
 
+    private String fileType;
+
 }
 

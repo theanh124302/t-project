@@ -59,14 +59,13 @@ public class PostService {
                 if (fileName == null) {
                     throw new BaseException(ResponseMessage.ERROR, ResponseStatus.ERROR);
                 }
-                String fileUrl = storageUtils.uploadFile(BUCKET_NAME, fileName,file);
+                String fileUrl = storageUtils.uploadFile(BUCKET_NAME,file);
 
                 FileEntity fileEntity = FileEntity.builder()
                         .postId(postEntity.getId())
                         .fileType(storageUtils.getFileType(fileName))
                         .fileName(fileName)
                         .fileUrl(fileUrl)
-                        .preSignedUrl(storageUtils.genPreSignedUrl(BUCKET_NAME, fileName))
                         .status(FileProcessStatus.SUCCESS)
                         .hidden(false)
                         .build();
@@ -96,7 +95,20 @@ public class PostService {
 
         PostEntity postEntity = initPostEntity(request, userId);
 
-        String preSignedUrl = storageUtils.genPreSignedUrl(BUCKET_NAME, UUID.randomUUID().toString());
+        String fileName = UUID.randomUUID().toString();
+
+        String preSignedUrl = storageUtils.genPreSignedUrl(fileName);
+
+        FileEntity fileEntity = FileEntity.builder()
+                .postId(postEntity.getId())
+                .fileType(request.getFileType())
+                .fileName(fileName)
+                .preSignedUrl(preSignedUrl)
+                .status(FileProcessStatus.SUCCESS)
+                .hidden(false)
+                .build();
+
+        fileRepository.save(fileEntity);
 
         return CreatedMassivePostResponseDTO.builder()
                 .postId(postEntity.getId())

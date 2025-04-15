@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -14,10 +15,20 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-@AllArgsConstructor
 public class StorageUtils {
 
+
+    @Value("${cloud.aws.bucket.name}")
+    private String bucketName;
+
+    @Value("${cloud.aws.cloudfront.domain}")
+    private String cloudFrontDomain;
+
     AmazonS3 s3Client;
+
+    public StorageUtils(AmazonS3 s3Client) {
+        this.s3Client = s3Client;
+    }
 
     public String getFileType(String fileName) {
         String fileType = null;
@@ -53,12 +64,12 @@ public class StorageUtils {
     }
 
 
-    public String genPreSignedUrl(String bucketName, String fileName) {
+    public String genPreSignedUrl(String fileName) {
         String keyFile = generateKeyFile(fileName);
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime() + 3 * 60 * 1000;
         expiration.setTime(expTimeMillis);
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, keyFile)
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(this.bucketName, keyFile)
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(expiration);
 
@@ -71,14 +82,14 @@ public class StorageUtils {
         return url.toString();
     }
 
-    public String uploadFile(String bucketName, String fileName, File file) {
+    public String uploadFile(String fileName, File file) {
         if(fileName == null){
             fileName = "null";
         }
         String keyFile = generateKeyFile(fileName);
-        PutObjectRequest uploadRequest = new PutObjectRequest(bucketName, keyFile, file);
+        PutObjectRequest uploadRequest = new PutObjectRequest(this.bucketName, keyFile, file);
         s3Client.putObject(uploadRequest);
-        return s3Client.getUrl(bucketName, keyFile).toString();
+        return this.cloudFrontDomain + "/" + s3Client.getUrl(this.bucketName, keyFile).toString();
     }
 
 }
