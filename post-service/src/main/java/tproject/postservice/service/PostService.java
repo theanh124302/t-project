@@ -8,10 +8,12 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tproject.postservice.dto.request.CreatePostRequestDTO;
 import tproject.postservice.dto.response.CreatedLightPostResponseDTO;
+import tproject.postservice.dto.response.CreatedMassivePostResponseDTO;
 import tproject.postservice.entity.FileEntity;
 import tproject.postservice.entity.PostEntity;
 import tproject.postservice.enumerates.FileProcessStatus;
@@ -19,6 +21,9 @@ import tproject.postservice.enumerates.PostStatus;
 import tproject.postservice.repository.FileRepository;
 import tproject.postservice.repository.PostRepository;
 import tproject.postservice.util.StorageUtils;
+import tproject.tcommon.enums.ResponseStatus;
+import tproject.tcommon.exception.base.BaseException;
+import tproject.tcommon.response.message.ResponseMessage;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,8 +43,6 @@ public class PostService {
 
     private final FileRepository fileRepository;
 
-    private final AmazonS3 s3Client;
-
     private final StorageUtils storageUtils;
 
     private static final String BUCKET_NAME = "taprojectbucket";
@@ -53,7 +56,10 @@ public class PostService {
             try {
                 File file = convertMultiPartToFile(uploadMedia);
                 String fileName = uploadMedia.getOriginalFilename();
-                String fileUrl = storageUtils.uploadPrivateFile(BUCKET_NAME, fileName,file);
+                if (fileName == null) {
+                    throw new BaseException(ResponseMessage.ERROR, ResponseStatus.ERROR);
+                }
+                String fileUrl = storageUtils.uploadFile(BUCKET_NAME, fileName,file);
 
                 FileEntity fileEntity = FileEntity.builder()
                         .postId(postEntity.getId())
@@ -75,15 +81,29 @@ public class PostService {
 
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new BaseException(ResponseMessage.ERROR, ResponseStatus.ERROR);
             }
         }
-
 
         return CreatedLightPostResponseDTO.builder()
                 .postId(postEntity.getId())
                 .status(postEntity.getStatus().name())
                 .build();
+    }
+
+    @Transactional
+    public CreatedMassivePostResponseDTO createMassivePost(CreatePostRequestDTO request, Long userId) {
+
+        PostEntity postEntity = initPostEntity(request, userId);
+
+        String preSignedUrl = storageUtils.genPreSignedUrl(BUCKET_NAME, UUID.randomUUID().toString());
+
+        return CreatedMassivePostResponseDTO.builder()
+                .postId(postEntity.getId())
+                .status(postEntity.getStatus().name())
+                .preSignedUrl(preSignedUrl)
+                .build();
+
     }
 
     private PostEntity initPostEntity(CreatePostRequestDTO request, Long userId) {
@@ -101,55 +121,12 @@ public class PostService {
     }
 
 
-    public void test() {
-        try {
-            File file = generateHtmlFile("test", "temp.html");
-            PutObjectRequest uploadRequest = (new PutObjectRequest("taprojectbucket", UUID.randomUUID().toString(), file)).withCannedAcl(CannedAccessControlList.PublicRead);
-            s3Client.putObject(uploadRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String genPreSignedUrl() {
-
-        Date expiration = new Date();
-        long expTimeMillis = expiration.getTime() + 3 * 60 * 1000;
-        expiration.setTime(expTimeMillis);
-
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest("taprojectbucket", UUID.randomUUID().toString())
-                .withMethod(HttpMethod.PUT)
-                .withExpiration(expiration);
-
-        generatePresignedUrlRequest.addRequestParameter(
-                Headers.CONTENT_TYPE,
-                "text/html"
-        );
-
-        URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
-
-        return url.toString();
-    }
-
-
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         FileOutputStream fos = new FileOutputStream(convertedFile);
         fos.write(file.getBytes());
         fos.close();
         return convertedFile;
-    }
-
-    private File generateHtmlFile(String htmlContent, String filePath) throws IOException {
-        File file = new File(filePath);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(htmlContent);
-        }
-        return file;
-    }
-
-    public void testCollection() {
-
     }
 
 }

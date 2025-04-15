@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tproject.postservice.dto.request.CreatePostRequestDTO;
 import tproject.postservice.dto.response.CreatedLightPostResponseDTO;
+import tproject.postservice.dto.response.CreatedMassivePostResponseDTO;
 import tproject.postservice.service.PostService;
 import tproject.tcommon.enums.ResponseStatus;
 import tproject.tcommon.response.restfulresponse.RestfulResponse;
@@ -51,21 +52,13 @@ public class PostController {
 
     }
 
-    @GetMapping("/test")
-    public RestfulResponse<String> test() {
-        postService.test();
+    @PostMapping("/create/massive")
+    public RestfulResponse<CreatedMassivePostResponseDTO> createMassivePost(@RequestBody CreatePostRequestDTO createPostRequestDTO,
+                                                                           @AuthenticationPrincipal Jwt jwt) {
+        Long userId = Long.parseLong(jwt.getSubject());
+        CreatedMassivePostResponseDTO createdMassivePostResponseDTO = postService.createMassivePost(createPostRequestDTO, userId);
         return RestfulResponse
-                .success("test", ResponseStatus.SUCCESS);
-    }
-
-    @GetMapping("/test-generate-presigned-url")
-    public RestfulResponse<String> testGeneratePresignedUrl() {
-
-        log.info("test generate presigned url");
-
-        String presignedUrl = postService.genPreSignedUrl();
-        return RestfulResponse
-                .success(presignedUrl, ResponseStatus.SUCCESS);
+                .success(createdMassivePostResponseDTO, ResponseStatus.SUCCESS);
     }
 
 }

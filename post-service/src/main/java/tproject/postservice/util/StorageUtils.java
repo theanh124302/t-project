@@ -71,7 +71,7 @@ public class StorageUtils {
         return url.toString();
     }
 
-    public String uploadPrivateFile(String bucketName, String fileName, File file) {
+    public String uploadFile(String bucketName, String fileName, File file) {
         if(fileName == null){
             fileName = "null";
         }
