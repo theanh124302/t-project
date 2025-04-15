@@ -1,11 +1,10 @@
-package tproject.postservice.storage;
+package tproject.postservice.util;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.UploadObjectRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -49,16 +48,17 @@ public class StorageUtils {
         }
     }
 
-    public String generateKeyFile(String prefixKeyName) {
-        return String.join("/", prefixKeyName, UUID.randomUUID().toString());
+    public String generateKeyFile(String fileName) {
+        return String.join("/", generateContentType(fileName), UUID.randomUUID().toString());
     }
 
 
-    public String genPreSignedUrl(String prefixKeyName, String bucketName, String fileName) {
+    public String genPreSignedUrl(String bucketName, String fileName) {
+        String keyFile = generateKeyFile(fileName);
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime() + 3 * 60 * 1000;
         expiration.setTime(expTimeMillis);
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, generateKeyFile(prefixKeyName))
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, keyFile)
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(expiration);
 
@@ -71,11 +71,15 @@ public class StorageUtils {
         return url.toString();
     }
 
-    public String uploadPublicFile(String bucketName, String keyName, File file) {
-        PutObjectRequest uploadRequest = new PutObjectRequest(bucketName, keyName, file)
+    public String uploadPublicFile(String bucketName, String fileName, File file) {
+        if(fileName == null){
+            fileName = "null";
+        }
+        String keyFile = generateKeyFile(fileName);
+        PutObjectRequest uploadRequest = new PutObjectRequest(bucketName, keyFile, file)
                 .withCannedAcl(com.amazonaws.services.s3.model.CannedAccessControlList.PublicRead);
         s3Client.putObject(uploadRequest);
-        return s3Client.getUrl(bucketName, keyName).toString();
+        return s3Client.getUrl(bucketName, keyFile).toString();
     }
 
 }

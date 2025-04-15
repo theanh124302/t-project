@@ -24,8 +24,12 @@ public class FileEntity extends BaseEntity {
 
     private Long postId;
 
-    @Enumerated(EnumType.STRING)
-    private FileType fileType;
+//    @Enumerated(EnumType.STRING)
+//    private FileType fileType;
+
+    private String fileType;
+
+    private String fileName;
 
     private String fileUrl;
 
