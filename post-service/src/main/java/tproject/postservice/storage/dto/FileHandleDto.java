@@ -19,7 +19,7 @@ public abstract class FileHandleDto {
     private Long contentLength;
     private String eTag;
     private String url;
-    private Integer expirationTime; // Thời gian hết hạn cho presigned URL (phút)
+    private Integer expirationTime;
 
     FileHandleDto(String fileName, String fileType) {
         this.id = UUID.randomUUID().toString();

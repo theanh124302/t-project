@@ -43,10 +43,7 @@ public class PostService {
 
         PostEntity postEntity = initPostEntity(request, userId);
 
-
-
 //        PutObjectRequest uploadRequest = (new PutObjectRequest("taprojectbucket", UUID.randomUUID().toString(), convertMultiPartToFile(uploadMedia))).withCannedAcl(CannedAccessControlList.PublicRead);
-
 
         return CreatedPostResponseDTO.builder()
                 .postId(postEntity.getId())

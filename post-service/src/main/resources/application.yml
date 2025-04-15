@@ -16,6 +16,7 @@ spring:
 cloud:
   aws:
     credentials:
+
     region:
       static: ap-southeast-1
     bucket:
