@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: newsfeed-service
+
+  cassandra:
+    keyspace-name: example_keyspace
+    contact-points: localhost
+    port: 9042
+    schema-action: CREATE_IF_NOT_EXISTS
+    local-datacenter: datacenter1
