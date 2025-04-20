@@ -1,42 +1,37 @@
 package tproject.postservice.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tproject.postservice.enumerates.FileProcessStatus;
 import tproject.tcommon.model.BaseEntity;
 
 @Entity
-@Table(name = "files")
+@Table(name = "newsfeed")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FileEntity extends BaseEntity {
+public class NewsfeedEntity extends BaseEntity {
+
+    private Long userId;
 
     private Long postId;
 
-//    @Enumerated(EnumType.STRING)
-//    private FileType fileType;
+    private String content;
 
     private String fileType;
 
-    private String fileName;
-
     private String fileUrl;
 
-    private String preSignedUrl;
+    private String visibility;
 
-    @Enumerated(EnumType.STRING)
-    private FileProcessStatus status;
+    private String viewed;
 
-    private Boolean hidden;
+    private int syncStatus;
 
 }

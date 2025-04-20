@@ -26,11 +26,9 @@ docker run -p 8095:8095 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTS
 
 docker run --name my-cassandra -d -p 9042:9042 cassandra:latest
 
--- Tạo keyspace
 CREATE KEYSPACE example_keyspace
 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 
--- Sử dụng keyspace
 USE example_keyspace;
 
 -- Tạo bảng

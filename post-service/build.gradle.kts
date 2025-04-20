@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-cassandra")
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("com.amazonaws:aws-java-sdk-s3:1.12.643")
 	implementation("com.amazonaws:aws-java-sdk-cloudfront:1.12.643")
