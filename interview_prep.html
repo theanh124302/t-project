@@ -1,0 +1,181 @@
+cat > interview_prep.html <<'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interview Prep</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; padding: 2rem; background: #fff; }
+    h1 { text-align: center; color: #222; }
+    h2 { margin-top: 2rem; color: #003366; }
+    ul { margin-left: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Interview Preparation Topics</h1>
+
+  <h2>1. Java Core</h2>
+  <ul>
+    <li>Primitive vs Reference vs Wrapper</li>
+    <li>String Pool</li>
+    <li>OOP Principles</li>
+    <li>SOLID Principles</li>
+    <li>Interface vs Abstract</li>
+    <li>ClassLoader, dynamic loading</li>
+    <li>Memory Model: Heap, Stack, Method Area, PC, Native Stack</li>
+    <li>Memory Leak detection</li>
+    <li>VarHandle, Unsafe, Memory Barriers</li>
+    <li>Equals and HashCode</li>
+  </ul>
+
+  <h2>2. Java Concurrency</h2>
+  <ul>
+    <li>Multithreading, Thread Safety</li>
+    <li>ThreadPoolExecutor vs ForkJoinPool</li>
+    <li>Volatile, Atomic classes</li>
+    <li>Locks: ReentrantLock, ReadWriteLock</li>
+    <li>Deadlock, Livelock, Starvation</li>
+    <li>Phaser, CountDownLatch, CyclicBarrier</li>
+  </ul>
+
+  <h2>3. Java 8+ Features</h2>
+  <ul>
+    <li>Lambda, Stream, Optional</li>
+    <li>Functional Interfaces</li>
+    <li>Method References, Default Methods</li>
+    <li>CompletableFuture</li>
+  </ul>
+
+  <h2>4. Spring Ecosystem</h2>
+  <ul>
+    <li>IoC, DI, Bean Lifecycle</li>
+    <li>SpringContext vs Factory</li>
+    <li>@Transactional: propagation, isolation, rollback</li>
+    <li>Spring AOP: Proxy, Pointcut, Advice</li>
+    <li>Spring Boot Autoconfiguration</li>
+    <li>Spring Security</li>
+    <li>Spring Retry / Resilience4j</li>
+    <li>Webflux</li>
+  </ul>
+
+  <h2>5. Reactive Programming</h2>
+  <ul>
+    <li>Mono / Flux</li>
+    <li>map, flatMap, filter, zip, merge, concat</li>
+    <li>onErrorReturn, onErrorResume</li>
+    <li>Schedulers: elastic, parallel, boundedElastic</li>
+    <li>Hot vs Cold Publisher</li>
+    <li>Backpressure</li>
+    <li>Reactor Test / StepVerifier</li>
+  </ul>
+
+  <h2>6. Persistence & ORM</h2>
+  <ul>
+    <li>JDBC, JdbcTemplate</li>
+    <li>ORM, Hibernate</li>
+    <li>JPA, EntityManager</li>
+    <li>N+1 Problem</li>
+    <li>R2DBC</li>
+  </ul>
+
+  <h2>7. Database: PostgreSQL</h2>
+  <ul>
+    <li>SQL: DDL, DML, JOINs, Functions vs Operators</li>
+    <li>Indexes: B-Tree, Hash, Bitmap</li>
+    <li>Transactions: ACID</li>
+    <li>MVCC, Isolation, Lock Modes</li>
+    <li>Execution Plan, EXPLAIN ANALYZE</li>
+    <li>Query Optimization, SQL Order</li>
+    <li>Full Text Search</li>
+    <li>Parallel Query</li>
+    <li>Connection Pool (HikariCP)</li>
+    <li>Replication: Streaming, Logical</li>
+    <li>High Availability, WAL, Failover</li>
+    <li>JIT Compilation</li>
+    <li>pg_stat views, Performance Monitoring</li>
+    <li>2PC</li>
+  </ul>
+
+  <h2>8. Distributed Systems Concepts</h2>
+  <ul>
+    <li>CAP Theorem</li>
+    <li>Consensus: Raft, Paxos</li>
+    <li>Leader Election</li>
+    <li>Gossip Protocol</li>
+    <li>Idempotency</li>
+  </ul>
+
+  <h2>9. Kafka</h2>
+  <ul>
+    <li>Architecture: Broker, Topic, Partition, Consumer Group, Producer</li>
+    <li>Replication, Fault Tolerance</li>
+    <li>Offset Strategies</li>
+    <li>Transactions, Exactly-once semantics</li>
+    <li>Kafka Streams</li>
+    <li>Kafka Connect</li>
+    <li>Schema Registry</li>
+    <li>Rebalance Protocol</li>
+  </ul>
+
+  <h2>10. Redis</h2>
+  <ul>
+    <li>Data Types: String, List, Set, Hash, Sorted Set, HyperLogLog</li>
+    <li>Eviction Policies</li>
+    <li>Pub/Sub</li>
+    <li>Transactions</li>
+    <li>Lua Scripting</li>
+    <li>Cluster, Sentinel</li>
+    <li>Redisson: Fair Lock, MultiLock, ReadWriteLock</li>
+    <li>Caching Strategies</li>
+  </ul>
+
+  <h2>11. gRPC</h2>
+  <ul>
+    <li>Concept, Benefits</li>
+    <li>Protocol Buffers</li>
+    <li>Unary, Streaming types</li>
+    <li>Interceptor</li>
+    <li>gRPC vs REST</li>
+    <li>Load Balancing</li>
+    <li>Retry Policies</li>
+    <li>Channel Pooling</li>
+    <li>Reflection</li>
+  </ul>
+
+  <h2>12. Cassandra</h2>
+  <ul>
+    <li>Data Model: Wide Rows, Composite Key</li>
+    <li>Partitioning and Clustering</li>
+    <li>Replication, Consistency Levels</li>
+    <li>Read/Write Path</li>
+    <li>Hinted Handoff, Read Repair</li>
+    <li>Anti-Entropy, Repair</li>
+    <li>Tombstone Handling</li>
+    <li>LSM Tree, Compaction Strategies</li>
+    <li>Gossip Protocol</li>
+    <li>Driver Retry/Load balancing policies</li>
+  </ul>
+
+  <h2>13. DevOps / Observability / JVM Ops</h2>
+  <ul>
+    <li>JVM Tuning Flags</li>
+    <li>GC Strategies: G1GC, ZGC, Shenandoah</li>
+    <li>Heap dump, Thread dump analysis</li>
+    <li>Dockerize Java apps</li>
+    <li>Prometheus + Micrometer</li>
+    <li>Distributed Tracing: OpenTelemetry</li>
+  </ul>
+
+  <h2>14. System Design & DSA</h2>
+  <ul>
+    <li>Array, Linked List, Stack, Queue</li>
+    <li>Tree, Trie, Graph</li>
+    <li>Sorting, Searching</li>
+    <li>Backtracking, Greedy, DP</li>
+    <li>Time & Space Complexity</li>
+    <li>Rate Limiting, Id Generation, Load Balancing</li>
+  </ul>
+
+</body>
+</html>
+EOF
