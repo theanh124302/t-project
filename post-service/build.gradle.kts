@@ -27,6 +27,10 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("tproject:common-proto:1.0.0")
+	implementation("io.grpc:grpc-netty-shaded:1.61.0")
+	implementation("io.grpc:grpc-stub:1.61.0")
+	implementation("io.grpc:grpc-protobuf:1.61.0")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-cassandra")
