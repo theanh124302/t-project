@@ -14,12 +14,17 @@ java {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("tproject:common-proto:1.0.0")
+	implementation("io.grpc:grpc-netty-shaded:1.61.0")
+	implementation("io.grpc:grpc-stub:1.61.0")
+	implementation("io.grpc:grpc-protobuf:1.61.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

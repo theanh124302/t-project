@@ -9,6 +9,7 @@ public class HelloServiceImpl extends HelloServiceGrpc.HelloServiceImplBase {
     @Override
     public void sayHello(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
         String name = request.getName();
+        System.out.println("Received request: " + name);
         HelloResponse response = HelloResponse.newBuilder()
                 .setMessage("Xin chào, " + name)
                 .build();
