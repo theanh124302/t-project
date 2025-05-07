@@ -9,22 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.catalina.connector.Connector;
-import org.apache.coyote.ProtocolHandler;
-import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClient;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -36,7 +27,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
@@ -82,6 +72,11 @@ public class VirtualThreadsTestApplication {
         )
         private Long id;
         private String title;
+        private String firstName;
+        private String lastName;
+        private long gender;
+        private long countryId;
+        private long syncStatus;
     }
 
 
@@ -106,12 +101,11 @@ public class VirtualThreadsTestApplication {
 
             List<CompletableFuture<Optional<EngineerEntity>>> results = new ArrayList<>();
 
-            for (int i = 0; i < API_CALLS_PER_REQUEST; i++) {
-                final int index = i;
+            for (long i = 0; i < API_CALLS_PER_REQUEST; i++) {
 
+                long finalI = i;
                 CompletableFuture<Optional<EngineerEntity>> future = CompletableFuture
-                        .supplyAsync(() -> engineerRepository.findById((long) index), executorService);
-//        .supplyAsync(() ->engineerRepository.findByTitle("Principal Engineer"));
+                        .supplyAsync(() -> engineerRepository.findById(finalI), executorService);
                 results.add(future);
             }
             try {

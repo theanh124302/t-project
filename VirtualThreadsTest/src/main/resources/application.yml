@@ -8,10 +8,10 @@ spring:
     username: t-user
     password: t-password
   jpa:
-    generate-ddl: true
+#    generate-ddl: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
