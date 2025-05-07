@@ -1,0 +1,17 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: VirtualThreadsTest
+  datasource:
+    url: jdbc:postgresql://localhost:5432/t-db
+    username: t-user
+    password: t-password
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
