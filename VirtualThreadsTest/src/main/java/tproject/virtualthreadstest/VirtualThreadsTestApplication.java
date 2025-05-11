@@ -84,7 +84,7 @@ public class VirtualThreadsTestApplication {
 
     @RestController
     static class TraditionalThreadsBenchmarkController {
-        private static final int API_CALLS_PER_REQUEST = 10;
+        private static final int API_CALLS_PER_REQUEST = 5;
         private final ExecutorService executorService;
         private final EngineerRepository engineerRepository;
 

@@ -26,7 +26,7 @@ public class UserRegisteredProducer {
 
         future.whenComplete((result, ex) -> {
 
-            log.info("check thread: {}", Thread.currentThread().getName());
+            log.info("check thread kafka: {}", Thread.currentThread().getName());
             if (ex != null) {
                 log.error("Unable to send user registration event to Kafka: {}", ex.getMessage());
             } else {

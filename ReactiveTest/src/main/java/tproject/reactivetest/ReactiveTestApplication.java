@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootApplication
 public class ReactiveTestApplication {
@@ -26,7 +28,7 @@ public class ReactiveTestApplication {
     @RestController
     static class ReactiveBenchmarkController {
         private final EngineerRepository engineerRepository;
-        private static final int API_CALLS_PER_REQUEST = 5;
+        private static final int API_CALLS_PER_REQUEST = 4;
 
         public ReactiveBenchmarkController(
                                            EngineerRepository engineerRepository) {
@@ -37,21 +39,62 @@ public class ReactiveTestApplication {
 
         @GetMapping("/api")
         public Mono<Long> handleApiRequest() {
+//            UUID requestId = UUID.randomUUID();
+            log.info("Thread before API calls: {}", Thread.currentThread().getName());
             Instant start = Instant.now();
-            List<Mono<EngineerEntity>> operations = new ArrayList<>();
-            for (long i = 0; i < API_CALLS_PER_REQUEST; i++) {
-                Mono<EngineerEntity> engineerEntityMono = engineerRepository.findById(i);
-                operations.add(engineerEntityMono);
-            }
-            return Flux.merge(operations)
-                    .collectList()
-                    .map(results -> {
-                        Instant end = Instant.now();
-                        Duration duration = Duration.between(start, end);
-                        long processingTime = duration.toMillis();
-                        log.info("Total processing time: {} ms", processingTime);
-                        return processingTime;
-                    });
+
+            Mono<EngineerEntity> engineerEntityMono = engineerRepository.findById(1L)
+                    .doOnSubscribe(s -> log.info("Starting DB query 1: {}",
+                            Thread.currentThread().getName()))
+                    .doOnNext(result -> log.info("Completed DB query 1, found {} records", result));
+
+////            List<Mono<EngineerEntity>> operations = new ArrayList<>();
+//            for (long i = 0; i < API_CALLS_PER_REQUEST; i++) {
+//                long finalI = i;
+//                Mono<EngineerEntity> engineerEntityMono = engineerRepository.findById(i);
+//
+////                operations.add(engineerEntityMono);
+//                engineerEntityMono.doOnSubscribe(s -> log.info("Starting API call {}: {}", finalI, Thread.currentThread().getName())).
+//                        subscribe();
+//            }
+            log.info("Thread after API calls: {}", Thread.currentThread().getName());
+
+
+
+            engineerEntityMono.subscribe();
+            engineerEntityMono.subscribe();
+            engineerEntityMono.subscribe();
+
+            return Mono.just(0L);
+
+
+
+//            return Flux.merge(operations)
+//                    .collectList()
+//                    .map(results -> {
+//                        log.info("results: {}", results);
+//                        Instant end = Instant.now();
+//                        Duration duration = Duration.between(start, end);
+//                        long processingTime = duration.toMillis();
+//                        log.info("Total processing time: {} ms", processingTime);
+//                        return processingTime;
+//                    });
+
+//            List<Flux<EngineerEntity>> operations = new ArrayList<>();
+//            for (long i = 0; i < API_CALLS_PER_REQUEST; i++) {
+//                Flux<EngineerEntity> engineerEntityMono = engineerRepository.findByTitle("Solution Architect");
+//                operations.add(engineerEntityMono);
+//            }
+//
+//            return Flux.merge(operations)
+//                    .collectList()
+//                    .map(results -> {
+//                        Instant end = Instant.now();
+//                        Duration duration = Duration.between(start, end);
+//                        long processingTime = duration.toMillis();
+//                        log.info("Total processing time: {} ms", processingTime);
+//                        return processingTime;
+//                    });
         }
     }
 }
