@@ -32,6 +32,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.jboss.logging:jboss-logging:3.5.3.Final")
     implementation("tproject:t-common:t-common-0.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

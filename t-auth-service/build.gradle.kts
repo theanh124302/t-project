@@ -30,6 +30,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.redisson:redisson-spring-boot-starter:3.27.2")
 	compileOnly("org.projectlombok:lombok")
 	implementation("tproject:t-common:t-common-0.0.1")
 	annotationProcessor("org.projectlombok:lombok")

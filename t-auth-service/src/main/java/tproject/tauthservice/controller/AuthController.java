@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public RestfulResponse<SignUpResponse> registerUser(@RequestBody SignupRequest signupRequest) {
+    public RestfulResponse<SignUpResponse> registerUser(@RequestBody SignupRequest signupRequest) throws InterruptedException {
         log.info("Call api /api/v1/auth/signup with request: {}", signupRequest);
         return authService.registerUser(signupRequest);
     }

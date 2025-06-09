@@ -3,6 +3,8 @@ package tproject.tauthservice.service;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,6 +40,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +55,7 @@ public class AuthService {
     private final UserRegisteredProducer userRegisteredProducer;
     private final JwtEncoder jwtEncoder;
     private final EntityManager entityManager;
+    private final RedissonClient redissonClient;
 
     private static final int JWT_EXPIRATION_TIME = 3600000;
     private static final int REFRESH_EXPIRATION_TIME = 9000000;
@@ -90,8 +94,19 @@ public class AuthService {
     }
 
     @Transactional
-    public RestfulResponse<SignUpResponse> registerUser(SignupRequest signupRequest) {
+    public RestfulResponse<SignUpResponse> registerUser(SignupRequest signupRequest) throws InterruptedException {
 
+        String username = signupRequest.getUsername();
+        String lockKey = "register_lock:" + username;
+        RLock lock = redissonClient.getLock(lockKey);
+        boolean isLocked = false;
+        isLocked = lock.tryLock(5, 20, TimeUnit.SECONDS);
+        log.info("Lock status for {}: {}", lockKey, isLocked);
+        Thread.sleep(15000);
+
+        if (!isLocked) {
+            return RestfulResponse.error("username.registration.busy", ResponseStatus.ERROR);
+        }
         if (authenticationRepository.existsByUsername(signupRequest.getUsername())
                 || userRepository.existsByUsername(signupRequest.getUsername())) {
             //todo: bloom filter
@@ -128,10 +143,11 @@ public class AuthService {
                 .lastName(signupRequest.getLastName())
                 .registeredAt(LocalDateTime.now())
                 .build();
-        userRegisteredProducer.sendUserRegistrationEvent(userRegisteredEvent);
+//        userRegisteredProducer.sendUserRegistrationEvent(userRegisteredEvent);
 
         SignUpResponse signUpResponse = new SignUpResponse(userId, signupRequest.getUsername());
-
+        lock.unlock();
+        log.info("User with id {} has been registered successfully", userId);
         return RestfulResponse.success(signUpResponse, ResponseStatus.SUCCESS);
 
     }
